@@ -1,0 +1,695 @@
+\documentclass[12pt]{article}
+
+  \usepackage[a4paper,left=20mm, right=25mm,top=25mm, bottom=25mm]{geometry}
+  \usepackage[utf8]{inputenc}
+  \usepackage[ngerman]{babel}
+  \usepackage[T1]{fontenc}
+
+  %Grafiken
+  \usepackage{graphicx}
+ 
+  %Tabellen
+  \usepackage{array}
+  \usepackage{tabularx}
+  \usepackage{booktabs}
+  \newcolumntype{K}[1]{S[table-format={#1}, table-alignment=center, table-number-alignment=center, input-decimal-markers={,}, output-decimal-marker={,}]}
+  \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe  
+  \newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}} % zentriert mit Breitenangabe  
+  \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe  
+  
+  %Matheformeln
+  \usepackage{amsmath,amsfonts,amssymb,amsthm} %mathe symbole
+    \newtheorem{thm}{Satz} %[section]
+    \newtheorem{defn}[thm]{Definition}
+    \newtheorem{lem}[thm]{Lemma}
+    \newtheorem{prop}[thm]{Proposition}
+    \newtheorem{cor}[thm]{Korollar}
+
+\usepackage{hyperref}
+
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+%\usepackage{courier}
+    
+ 
+%***********************************************************************
+\begin{document}
+
+\section{Das Problem}
+Es sei $n\in\mathbb{N}$ mit $n\geq 2$. Wir definieren die Indexmenge $N=\{1, 2,\dots, n\}$ und zwei Vektoren $p = (p_1, p_2, \dots, p_n), q = (q_1, q_2, \dots, q_n)$ mit $n\geq 2$ und $p_i, q_i \in \{0, 1\}$ für $i\in N$. 
+Für $i,j \in N$ mit $i<j$ sei 
+\begin{align*}
+\mathrm{one}_i^j(p) &=   \#\{ k \mid i< k < j, p_k=1 \}
+\\
+\overline{\mathrm{one}}_i^j(p) &=  \#\{ k \mid 1\leq k<i, p_k=1 \}
++
+\#\{ k \mid j< k\leq n, p_k=1 \}
+\\
+\mathrm{zero}_i^j(p) 
+&=   \#\{ k\mid i< k < j, p_k=0 \}
+\\
+\overline{\mathrm{zero}}_i^j(p) 
+&=   \#\{ k\mid 1\leq k < i, p_k=0 \}
++  \#\{ k\mid j< k \leq n, p_k=0 \}
+\end{align*}
+
+\begin{defn}
+Es sei das Tupel $(n, p, q)$ wie oben beschrieben.
+Gibt es $i, j \in N$ mit $i<j$, $p_i = p_j$ und
+\begin{align}
+\mathrm{one}_i^{j}(p)
+&> 
+\overline{\mathrm{one}}_i^{j}(p),
+\label{eq:Voraussetzung für Tausch -> ones_greater}
+\\
+\mathrm{zero}_i^{j}(p)
+&> 
+\overline{\mathrm{zero}}_i^{j}(p),
+\label{eq:Voraussetzung für Tausch -> zeros_greater}
+\end{align}
+dann kann für $(i, j)$ folgende Transformation durchgeführt werden, die wir Tausch oder Wechsel nennen
+\begin{align*}
+\tau_{ij}(p) 
+&= (p_1, p_2, \dots, p_{i-1}, 1-p_i, p_{i+1},\dots, p_{j-1}, 1-p_j, p_{j+1},\dots, p_n).
+\end{align*}
+Kann ein $q$ durch eine endliche Folge von $m$ Wechseln aus $p$ erreicht werden, also
+\begin{align}
+(\tau_{i_mj_m} \circ \cdots \circ \tau_{i_2j_2}\circ \tau_{i_1j_1}) (p) 
+&= 
+q,
+\label{eq:p=q durch wechsel}
+\end{align}
+schreiben wir auch $p\sim q$.
+\end{defn}
+
+\begin{defn}
+Es sei $(n, p, q)$ gegeben mit $\#\{ i \in N\mid p_i=1 \}$ und $\#\{ i \in N\mid p_i=0 \}$ ungerade.
+Gilt $p\sim q$, so nennen wir $(n, p, q)$ lösbar.
+\label{defn:problembeschreibung}
+\end{defn}
+\noindent Und die Frage ist natürlich: Es sei das Tupel $(n, p, q)$ gegeben. Ist $(n, p, q)$ lösbar?
+
+\section{Lösung}
+\begin{prop}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Dann ist $n$ gerade.
+\begin{proof}
+Da nach Voraussetzung $\#\{ i \in N\mid p_i=1 \}$ und $\#\{ i \in N\mid p_i=0 \}$ ungerade sind, muss $n=\#\{ i \in N\mid p_i=1 \} + \#\{ i \in N\mid p_i=0 \}$ gerade sein.
+\end{proof}
+\end{prop}
+
+
+\begin{prop}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Dann gilt für jeden Wechsel von $(i, j)$
+\begin{align}
+j-i
+&\geq \frac{n}{2}+1,
+\label{eq:j-i>n/2}
+\end{align} 
+d.h. die Anzahl der Indizes zwischen $i$ und $j$ muss mindestens $\frac{n}{2}$ sein.
+\begin{proof}
+Als notwendige Voraussetzung für einen Tausch folgt aus Bedingungen \ref{eq:Voraussetzung für Tausch -> ones_greater} und \ref{eq:Voraussetzung für Tausch -> zeros_greater}
+\begin{align*}
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
+&\geq
+\overline{\mathrm{one}}_i^{j}(p) + \overline{\mathrm{zero}}_i^{j}(p) + 2.
+\end{align*}
+Lässt man noch die Bilanzgleichungen
+\begin{align*}
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
++
+\overline{\mathrm{one}}_i^{j}(p) + \overline{\mathrm{zero}}_i^{j}(p) 
+&=
+n-2,
+\\
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
+&=
+j-i-1
+\end{align*}
+einfließen, folgt
+\begin{align*}
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
+&\geq
+n- (\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p))
+\\
+2(j-i-1)
+&\geq
+n
+\\
+j-i
+&\geq \frac{n}{2}+1.
+\end{align*}
+\end{proof}
+\end{prop}
+
+\begin{defn}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben.
+Wir definieren $L=\{1,\dots, \frac{n}{2}-1\}$ und $R=\{\frac{n}{2}+2,\dots, n\}$.
+\end{defn}
+
+\begin{cor}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Dann können die Indizes $\{\frac{n}{2}, \frac{n}{2}+1 \}$ nicht wechseln. Ein Wechsel $(i, j)$ findet immer mit einem Index $i\in L$ und einem Index $j\in R$ statt.
+\label{cor:Wechsel nur aus L und R}
+\end{cor}
+
+
+\begin{defn}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Wir nennen $i\in L$ tauschbar, wenn 
+\begin{align}
+\mathrm{one}_i^{n}(p)
+&> 
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
+\quad\textrm{und}
+\label{eq:Bedingung i und n tauschbar -> ones greater}
+\\
+\mathrm{zero}_i^{n}(p)
+&> 
+\overline{\mathrm{zero}}_i^{n}(p)
+-
+p_i+p_n
+\label{eq:Bedingung i und n tauschbar -> zeros greater}
+\end{align}
+gilt. Analog nennen wir $j\in R$ tauschbar, falls
+\begin{align}
+\mathrm{one}_1^{j}(p)
+&> 
+\overline{\mathrm{one}}_1^{j}(p)
++
+p_j-p_1
+\quad\textrm{und}
+\label{eq:Bedingung 1 und j tauschbar -> ones greater}
+\\
+\mathrm{zero}_1^{j}(p)
+&> 
+\overline{\mathrm{zero}}_1^{j}(p)
+-
+p_j+p_1
+\label{eq:Bedingung 1 und j tauschbar -> zeroes greater}
+\end{align}
+gilt.
+Sind alle $\{i\in L \mid p_i\neq q_i\}$ und $\{j\in R \mid p_j\neq q_j\}$ tauschbar, so nennen wir $(n, p, q)$ tauschbar für $(n, p, q)$.
+\end{defn}
+\noindent Das bedeutet, dass $(i, n)$ tauschen können, sobald $p_n$ den Wert von $p_i$ annimmt bzw. $(1, j)$ tauschen können, sobald $p_1$ den Wert von $p_j$ annimmt. 
+
+\begin{prop}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Können $i\in L, j\in R$ tauschen, so sind beide tauschbar.
+\begin{proof}
+Da $(i, j)$ tauschen können, ist $p_i=p_j$. Außerdem gelten nach Voraussetzung Ungleichungen \ref{eq:Voraussetzung für Tausch -> ones_greater} und \ref{eq:Voraussetzung für Tausch -> zeros_greater}.
+
+Betrachten wir den Fall $j=n$. Dann gilt $p_i=p_n$ und es folgen die Ungleichungen \ref{eq:Bedingung i und n tauschbar -> ones greater} und \ref{eq:Bedingung i und n tauschbar -> zeros greater}, womit $i$ tauschbar ist.
+
+Nun betrachten wir  $j<n$. Dann folgt
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&=
+\mathrm{one}_i^{j}(p)
++
+\mathrm{one}_{j-1}^{n}(p)
+\\
+&\geq 
+\mathrm{one}_i^{j}(p)
++
+p_j+p_n
+%\\
+%\overline{\mathrm{one}}_i^{n}(p)
+%&\leq
+%\overline{\mathrm{one}}_i^{j}(p)
+%-
+%p_j-p_n
+\\
+&>
+\overline{\mathrm{one}}_i^{j}(p)
++
+p_j+p_n
+\quad\textrm{mit Ungleichung \ref{eq:Voraussetzung für Tausch -> ones_greater}}
+\\
+&=
+\overline{\mathrm{one}}_i^{j}(p)
++
+p_i+p_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i+p_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
+\end{align*}
+und es gilt Ungleichung \ref{eq:Bedingung i und n tauschbar -> ones greater}. Analog folgt Ungleichung \ref{eq:Bedingung i und n tauschbar -> zeros greater} und damit ist $i$ tauschbar.
+Aus Symmetriegründen ist auch $j$ tauschbar.
+\end{proof} 
+\label{prop:wenn i j tauschen können, sind sie tauschbar}
+\end{prop}
+
+\begin{prop}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Ist $i\in L$ nicht tauschbar, dann kann kein $i'\in L$ mit $i'\geq i$ tauschen. Ist $j\in R$ nicht tauschbar, dann kann kein $j'\in R$ mit $j'\leq j$ tauschen. 
+\begin{proof}
+Nach Voraussetzung gilt 
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n.
+\end{align*}
+Es folgt
+\begin{align*}
+\mathrm{one}_{i'}^{n}(p)
+&\leq
+\mathrm{one}_{i}^{n}(p)
+-
+p_{i'}
+\\
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
+-
+p_{i'}
+\\
+&\leq
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-p_i
++
+p_i-p_n
+-
+p_{i'}
+\\
+&=
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-p_n
+-
+p_{i'}
+\\
+&\leq
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-p_n
++
+p_{i'}
+\end{align*}
+und mit analoger Betrachtung für die Anzahl der Nullen und aus Symmetriegründen 
+folgt die Behauptung.
+\end{proof}
+\label{prop:i nicht tauschbar => i'>i nicht tauschbar}
+\end{prop}
+
+\begin{prop}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Ist $i\in L$ tauschbar, dann sind alle $i'\in L$ mit $i'\leq i$ tauschbar. Ist $j\in R$ tauschbar, dann sind alle $j'\in R$ mit $j'\geq j$ tauschbar. 
+\begin{proof}
+Nach Voraussetzung gilt 
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&>
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n.
+\end{align*}
+Es folgt
+\begin{align*}
+\mathrm{one}_{i'}^{n}(p)
+&\geq
+\mathrm{one}_{i}^{n}(p)
++
+p_{i}
+\\
+&>
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
++
+p_{i}
+\\
+&\geq
+\overline{\mathrm{one}}_{i'}^{n}(p)
++ p_{i'}
++ p_i-p_n
++ p_{i}
+\\
+&\geq
+\overline{\mathrm{one}}_{i'}^{n}(p)
++p_{i'}-p_n
+\end{align*}
+und mit analoger Betrachtung für die Anzahl der Nullen und aus Symmetriegründen 
+folgt die Behauptung.
+\end{proof}
+\label{prop:i tauschbar => i'<i tauschbar}
+\end{prop}
+
+
+\begin{lem}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Genau dann ist $i\in N$ für alle $(n, p', q)$ mit $p'\sim p$ tauschbar, wenn $i$ für $(n, p, q)$ tauschbar ist.
+\begin{proof}
+Wir zeigen zunächst: $i\in L$ tauschbar $\Rightarrow$ $i$ ist tauschbar für alle $(n, p', q)$ mit $p'\sim p$. Es reicht zu zeigen, dass $i$ nach einem beliebigen Wechsel tauschbar bleibt.
+Betrachten wir also einen Wechsel $(i', j)$ mit $i'\neq i$.
+Da $(i', j)$ wechseln können, sind sie nach Proposition \ref{prop:wenn i j tauschen können, sind sie tauschbar} auch tauschbar. Es sei $p' = \tau_{i'j}(p)$.
+Wir unterscheiden 4 Fälle:
+\begin{enumerate}
+
+\item
+$i'>i$ und $j=n$: Nach Voraussetzung gelten
+\begin{align}
+\mathrm{one}_{i}^{n}(p')
+&\geq
+\mathrm{one}_{i'}^{n}(p')
++
+p'_{i'}
+\quad\textrm{wegen }j=n
+\label{lem_eq:one_in geq one_i'n + p'i'}
+\\
+\overline{\mathrm{one}}_{i}^{n}(p)
+&\leq
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-
+p_{i}
+\label{lem_eq:one_bar_in(p) <= one_bar_i'n(p) - p_i}
+\\
+\mathrm{one}_{i'}^{n}(p)
+&=
+\mathrm{one}_{i'}^{n}(p')
+\label{lem_eq:one_i'n(p) = one_i'n(p')}
+\\
+\overline{\mathrm{one}}_{i}^{n}(p)
+&=
+\overline{\mathrm{one}}_{i}^{n}(p')
+\label{lem_eq:one_bar_in(p) = one_bar_in(p')}
+\end{align}
+Damit folgern wir
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&\geq
+\mathrm{one}_{i'}^{n}(p')
++
+p'_{i'}
+\quad\textrm{Ungleichung \ref{lem_eq:one_in geq one_i'n + p'i'}}
+\\
+&=
+\mathrm{one}_{i'}^{n}(p)
++
+p'_{i'}
+\quad\textrm{Ungleichung \ref{lem_eq:one_i'n(p) = one_i'n(p')}}
+\\
+&>
+\overline{\mathrm{one}}_{i'}^{n}(p)
++
+\underbrace{p'_{i'}+p_{i'}}_{=1}-p_n
+\quad \textrm{mit Ungleichung \ref{eq:Bedingung i und n tauschbar -> ones greater}}
+\\
+&=
+\overline{\mathrm{one}}_{i'}^{n}(p)
++
+1-p_n
+\\
+&\geq
+\overline{\mathrm{one}}_{i}^{n}(p)
++p_i
++
+1-p_n
+\quad\textrm{Gleichung \ref{lem_eq:one_bar_in(p) <= one_bar_i'n(p) - p_i}}
+\\
+&=
+\overline{\mathrm{one}}_{i}^{n}(p')
++p_i
++
+1-p_n
+\quad\textrm{Gleichung \ref{lem_eq:one_bar_in(p) = one_bar_in(p')}}
+\\
+&=
+\overline{\mathrm{one}}_{i}^{n}(p')
++p_i
++
+p'_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p')
++
+p'_i-p'_n.
+\end{align*}
+Analoge Abschätzungen bezüglich der Nullen führen zur Tauschbarkeit von $i$ für $p'$.
+
+\item
+$i'>i$ und $j<n$: Dann ist $p'_i = p'_n = p_i=p_n$. Es folgt
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&\geq
+\mathrm{one}_{i'}^{j}(p')
++
+p'_{i'}
++
+p'_n
+\\
+&>
+\overline{\mathrm{one}}_{i'}^{j}(p')
++
+p'_{i'}
++
+p'_n
+\quad\textrm{denn $(i', j)$ können wechseln in $p'$}
+\\
+&\geq
+\overline{\mathrm{one}}_{i}^{n}(p')
++
+p'_i
++
+p'_n
++
+p'_{i'}
++
+p'_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p')
++
+p'_i-p'_n.
+\end{align*}
+Mit analoger Abschätzung bezüglich der Anzahl Nullen bleibt $i$ auch nach dem Wechsel tauschbar. 
+
+\item
+$i'<i$ und $j<n$:
+Hier gilt
+\begin{align*}
+\mathrm{one}_i^n(p')
+&=
+\mathrm{one}_i^n(p)
++ p'_j - p_j
+\\
+&> 
+\overline{\mathrm{one}}_i^{n}(p)
+ + p_i-p_n
+ + p'_j - p_j
+\quad \textrm{mit Ungleichung \ref{eq:Bedingung i und n tauschbar -> ones greater}}
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+- p'_{i'} + p_{i'}
+ + p_i-p_n
+ + p'_j - p_j
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+ + p_i-p_n.
+\end{align*}
+Mit analoger Abschätzung bezüglich der Anzahl Nullen bleibt $i$ somit nach dem Wechsel tauschbar.
+\item Es bleibt noch der Fall $i'<i$ und $j=n$. 
+%\begin{align*}
+%\overline{\mathrm{one}}_i^n(p')
+%&=
+%\overline{\mathrm{one}}_i^n(p)
+%+ p'_{i'} - p_{i'}
+%\\
+%\mathrm{one}_i^{n}(p)
+%&> 
+%\overline{\mathrm{one}}_i^{n}(p)
+%+
+%p_i-p_n
+%\\
+%p_{i'} &= p_n
+%\\
+%p'_{i'} &= p'_n \neq p_n
+%\\
+%\overline{\mathrm{one}}_i^n(p')
+%&=
+%\overline{\mathrm{one}}_i^n(p)
+%+p'_{i'}-p_{i'}
+%\\
+%p_i
+%&=
+%p'_i
+%\end{align*}
+Hier gilt
+\begin{align*}
+\mathrm{one}_i^n(p')
+&=
+\mathrm{one}_i^n(p)
+\\
+&> 
+\overline{\mathrm{one}}_i^{n}(p)
+ + p_i-p_n
+\quad \textrm{mit Ungleichung \ref{eq:Bedingung i und n tauschbar -> ones greater}}
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+- p'_{i'} + p_{i'}
+ + p_i-p_n
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+-p'_{i'} + p_{i}
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+-p'_{n} + p'_{i}.
+\end{align*}
+Mit analoger Betrachtungen für die Anzahl Nullen bleibt $i$ tauschbar.
+\end{enumerate}
+Insgesamt bleibt also die Tauschbarkeit erhalten. Es gilt noch zu zeigen, dass auch die Nicht-Tauschbarkeit erhalten bleibt. Es sei also
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n.
+\end{align*}
+\begin{enumerate}
+\item
+$i'>i$: Dieser Fall kann nicht eintreten, da nach Proposition \ref{prop:i nicht tauschbar => i'>i nicht tauschbar} ein solches $i'$ nicht tauschbar ist.
+
+\item
+$i'<i$ und $j<n$:
+Hier gilt
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&=
+\mathrm{one}_{i}^{n}(p)
++ p'_j - p_j
+\\
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++ p_i - p_n
++ p'_j - p_j
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+-p'_{i'} + p_{i'}
++ p_i - p_n
++ p'_j - p_j
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
++ p_i - p_n
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
++ p'_i - p'_n
+\end{align*}
+und mit gleicher Argumentation wie zuvor bleibt $i$ nicht tauschbar.
+
+\item $i'<i$ und $j=n$:
+Hier gilt
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&=
+\mathrm{one}_{i}^{n}(p)
+\\
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++ p_i - p_n
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+-p'_{i'} + p_{i'}
++ p_i - p_n
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+-p'_{i'} + p_i 
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+- p'_n + p'_i
+\end{align*}
+und auch hier folgt mit gleicher Argumentation wie oben, dass $i$ nicht tauschbar bleibt.
+\end{enumerate}
+Insgesamt folgt, dass die Nicht-Tauschbarkeit von $i\in L$ unter Wechseln erhalten bleibt und aus Symmetriegründen können wir diese Eigenschaft auf $i\in N$ ausweiten.
+\end{proof}
+
+\label{lem:einmal tauschbar immer tauschbar}
+\end{lem}
+
+\begin{cor}
+Gegeben sei $(n, p, q)$ tauschbar. Jedes $(n, p', q)$ mit $p'\sim p$ ist tauschbar.
+\label{cor:einmal tauschbar immer tauschbar}
+\end{cor}
+
+
+\begin{defn}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Wir definieren die linke Bilanz $b_L(p)$ und die rechte Bilanz $b_R(p)$ über
+\begin{align*}
+b_L(p) &=\#\{i\in L \mid p_i=1, q_i=0\}
+-
+\#\{i\in L \mid p_i=0, q_i=1\}
+\\
+b_R(p) &= \#\{j\in R \mid p_j=1, q_j=0\}
+-
+\#\{j\in R \mid p_j=0, q_j=1\}
+\end{align*}
+Wir nennen  $p$ ausbalanciert, wenn gilt 
+\begin{align*}
+b_L(p) &= b_R(p).
+\end{align*}
+\end{defn}
+
+
+\begin{lem}
+ Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Damit $(n, p, q)$ lösbar ist, muss $p$ ausbalanciert sein.
+\begin{proof}
+Aus Korollar \ref{cor:Wechsel nur aus L und R} folgt, dass bei jedem Wechsel die linke Bilanz und die rechte Bilanz gleichzeitig entweder um 1 erhöht oder verringert. Insbesondere ändert sich aber die Differenz der Bilanzen nicht. Da im Falle von $p=q$ trivialer Weise $b_L(p)=b_R(p)=0$ gilt, muss $p$ ausbalanciert sein.
+\end{proof}
+\label{lem_ausbalanciert}
+\end{lem}
+
+\begin{defn}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Wir definieren
+\begin{align*}
+\sigma(n, p, q) 
+&=\#\{i\in N \mid p_i\neq q_i\}.
+\end{align*}
+\end{defn}
+
+\begin{lem}
+Gegeben sei $(n, p, q)$ tauschbar und ausbalanciert mit $\sigma(n, p, q)>0$. Dann gibt es $(n, p', q)$ tauschbar mit $p'\sim p$ und $\sigma(n, p, q)\geq\sigma(n, p', q)$, wo tauschbare $i\in L$ und $j\in R$ existieren mit $p_i=p_j\neq q_i=q_j$.
+\begin{proof}
+ Wir können für $i\in L$  ohne Beschränkung der Allgemeinheit $p_i=0, q_i=1$ annehmen.
+ Da das Problem ausbalanciert ist, gibt es entweder ein $j\in R$ mit $p_j=0, q_j=1$ oder ein $i'\in L$ mit $p_{i'}=1, q_{i'}=0$. Im ersten Fall wären wir direkt fertig. Im zweiten Fall nutzen wir aus, dass $i$ und $i'$ tauschbar sind und können einen der beiden mit $n$ tauschen.
+\end{proof}
+\label{lem:tausch auf beiden seiten}
+\end{lem}
+
+
+\begin{thm}
+Es sei $(n, p, q)$ wie in Definition \ref{defn:problembeschreibung} gegeben. Genau dann ist $(n, p, q)$ lösbar, wenn es ausbalanciert und tauschbar ist.
+\begin{proof}
+Dass ein lösbares $p$ auch ausbalanciert sein muss, folgt aus Lemma \ref{lem_ausbalanciert}. Dass ein lösbares $p$ zudem impliziert, dass $(n, p, q)$ tauschbar ist, ist mit Korollar \ref{cor:einmal tauschbar immer tauschbar} auch klar. Für die umgekehrte Richtung nehmen wir an, das Problem wäre nicht lösbar. Dann können wir solange Wechsel ausführen bis wir eine kleinste Anzahl an nicht erfüllbaren Wechseln erreichen. Wir betrachten das zugehörige $\bar{p}\sim p$. Dann ist also $\sigma(n, \bar{p}, q)>0$. Außerdem ist wegen $\bar{p}\sim p$ mit Korollar \ref{cor:einmal tauschbar immer tauschbar} auch $(n, \bar{p}, q)$ tauschbar.
+Mit Lemma \ref{lem:tausch auf beiden seiten} dürfen wir damit davon ausgehen, dass  $i\in L$ und $j\in R$ existieren mit $p_i=p_j\neq q_i=q_j$.
+Nun gibt es zwei Fälle:
+\begin{enumerate}
+ \item $\bar{p}_1 = \bar{p}_n$: Falls $\bar{p}_i=\bar{p}_j=\bar{p}_1=\bar{p}_n$, setzen wir $p'=(\tau_{in}\circ\tau_{1j})(\bar{p})$, andernfalls $p'=(\tau_{in}\circ\tau_{1j}\circ\tau_{1n})(\bar{p})$.
+ \item $\bar{p}_1 \neq \bar{p}_n$: Hier nehmen wir ohne Beschränkung der Allgemeinheit an, dass $\bar{p}_i=\bar{p}_n$. Dann setzen wir $p'=(\tau_{1j}\circ\tau_{1n}\circ\tau_{in})(\bar{p})$.
+\end{enumerate}
+In jedem Fall erhalten wir durch weitere Wechsel ein $(n, p', q)$ mit $\sigma(n, p', q)<\sigma(n, \bar{p}, q)$,  ein Widerspruch.
+\end{proof}
+\label{thm}
+\end{thm}
+
+\begin{cor}
+Es lässt sich in $O(n)$ zeitlichem Aufwand bestimmen, ob das Problem lösbar ist.
+\begin{proof}
+Nach Satz \ref{thm} müssen wir nur prüfen, ob $(n, p, q)$ ausbalanciert und tauschbar ist.
+Die Bilanzen lassen sich in $O(n)$ berechnen. Anschließend muss man mit Proposition \ref{prop:i tauschbar => i'<i tauschbar} nur prüfen, ob $\max_{i\in L, p_i\neq q_i} i$ mit $n$ tauschbar ist und  ob $\min_{j\in R, p_j\neq q_j} j$ mit $1$ tauschbar ist. Das ist jeweils in $O(n)$ Aufwand mit $O(1)$ Speicher möglich.
+\end{proof}
+\end{cor}
+
+\end{document}

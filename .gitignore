@@ -1,0 +1,6 @@
+*.aux
+*.log
+*.out
+*.gz
+.pytest_cache
+__pycache__
