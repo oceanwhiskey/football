@@ -1,0 +1,703 @@
+\documentclass[12pt]{article}
+
+  \usepackage[a4paper,left=20mm, right=25mm,top=25mm, bottom=25mm]{geometry}
+  \usepackage[utf8]{inputenc}
+  \usepackage[english]{babel}
+  \usepackage[T1]{fontenc}
+
+  %Graphics
+  \usepackage{graphicx}
+ 
+  %Tables
+  \usepackage{array}
+  \usepackage{tabularx}
+  \usepackage{booktabs}
+  \newcolumntype{K}[1]{S[table-format={#1}, table-alignment=center, table-number-alignment=center, input-decimal-markers={,}, output-decimal-marker={,}]}
+  \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % left-aligned with given width
+  \newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}} % centered with given width
+  \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % right-aligned with given width
+  
+  %Math formulas
+  \usepackage{amsmath,amsfonts,amssymb,amsthm} %math symbols
+    \newtheorem{thm}{Theorem} %[section]
+    \newtheorem{defn}[thm]{Definition}
+    \newtheorem{lem}[thm]{Lemma}
+    \newtheorem{prop}[thm]{Proposition}
+    \newtheorem{cor}[thm]{Corollary}
+
+\usepackage{hyperref}
+
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+%\usepackage{courier}
+    
+ 
+%***********************************************************************
+\begin{document}
+
+\section{The Problem}
+Let $n\in\mathbb{N}$ with $n\geq 2$. We define the index set $N=\{1, 2,\dots, n\}$ and two vectors $p = (p_1, p_2, \dots, p_n), q = (q_1, q_2, \dots, q_n)$ with $n\geq 2$ and $p_i, q_i \in \{0, 1\}$ for $i\in N$.
+For $i,j \in N$ with $i<j$ let
+\begin{align*}
+\mathrm{one}_i^j(p) &=   \#\{ k \mid i< k < j, p_k=1 \}
+\\
+\overline{\mathrm{one}}_i^j(p) &=  \#\{ k \mid 1\leq k<i, p_k=1 \}
++
+\#\{ k \mid j< k\leq n, p_k=1 \}
+\\
+\mathrm{zero}_i^j(p) 
+&=   \#\{ k\mid i< k < j, p_k=0 \}
+\\
+\overline{\mathrm{zero}}_i^j(p) 
+&=   \#\{ k\mid 1\leq k < i, p_k=0 \}
++  \#\{ k\mid j< k \leq n, p_k=0 \}
+\end{align*}
+
+\begin{defn}
+Let the tuple $(n, p, q)$ be as described above.
+If there exist $i, j \in N$ with $i<j$, $p_i = p_j$ and
+\begin{align}
+\mathrm{one}_i^{j}(p)
+&> 
+\overline{\mathrm{one}}_i^{j}(p),
+\label{eq:condition for swap -> ones_greater}
+\\
+\mathrm{zero}_i^{j}(p)
+&> 
+\overline{\mathrm{zero}}_i^{j}(p),
+\label{eq:condition for swap -> zeros_greater}
+\end{align}
+then the following transformation, which we call a swap, may be performed for $(i, j)$
+\begin{align*}
+\tau_{ij}(p) 
+&= (p_1, p_2, \dots, p_{i-1}, 1-p_i, p_{i+1},\dots, p_{j-1}, 1-p_j, p_{j+1},\dots, p_n).
+\end{align*}
+If some $q$ can be reached from $p$ by a finite sequence of $m$ swaps, i.e.
+\begin{align}
+(\tau_{i_mj_m} \circ \cdots \circ \tau_{i_2j_2}\circ \tau_{i_1j_1}) (p) 
+&= 
+q,
+\label{eq:p=q via swaps}
+\end{align}
+we also write $p\sim q$.
+\end{defn}
+
+\begin{defn}
+Let $(n, p, q)$ be given with $\#\{ i \in N\mid p_i=1 \}$ and $\#\{ i \in N\mid p_i=0 \}$ odd.
+If $p\sim q$ holds, we call $(n, p, q)$ solvable.
+\label{defn:problem description}
+\end{defn}
+\noindent And the question of course is: given the tuple $(n, p, q)$, is $(n, p, q)$ solvable?
+
+\section{Solution}
+\begin{prop}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. Then $n$ is even.
+\begin{proof}
+Since by assumption $\#\{ i \in N\mid p_i=1 \}$ and $\#\{ i \in N\mid p_i=0 \}$ are odd, $n=\#\{ i \in N\mid p_i=1 \} + \#\{ i \in N\mid p_i=0 \}$ must be even.
+\end{proof}
+\end{prop}
+
+
+\begin{prop}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. Then for every swap of $(i, j)$
+\begin{align}
+j-i
+&\geq \frac{n}{2}+1,
+\label{eq:j-i>n/2}
+\end{align} 
+i.e.\ the number of indices between $i$ and $j$ must be at least $\frac{n}{2}$.
+\begin{proof}
+As a necessary condition for a swap, conditions \eqref{eq:condition for swap -> ones_greater} and \eqref{eq:condition for swap -> zeros_greater} give
+\begin{align*}
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
+&\geq
+\overline{\mathrm{one}}_i^{j}(p) + \overline{\mathrm{zero}}_i^{j}(p) + 2.
+\end{align*}
+Bringing in the balance equations
+\begin{align*}
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
++
+\overline{\mathrm{one}}_i^{j}(p) + \overline{\mathrm{zero}}_i^{j}(p) 
+&=
+n-2,
+\\
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
+&=
+j-i-1
+\end{align*}
+we obtain
+\begin{align*}
+\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p)
+&\geq
+n- (\mathrm{one}_i^{j}(p) + \mathrm{zero}_i^{j}(p))
+\\
+2(j-i-1)
+&\geq
+n
+\\
+j-i
+&\geq \frac{n}{2}+1.
+\end{align*}
+\end{proof}
+\end{prop}
+
+\begin{defn}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}.
+We define $L=\{1,\dots, \frac{n}{2}-1\}$ and $R=\{\frac{n}{2}+2,\dots, n\}$.
+\end{defn}
+
+\begin{cor}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. Then the indices $\{\frac{n}{2}, \frac{n}{2}+1 \}$ can never swap. A swap $(i, j)$ always takes place with an index $i\in L$ and an index $j\in R$.
+\label{cor:swap only from L and R}
+\end{cor}
+
+\begin{defn}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. We call $(n, p, q)$ \emph{center-equal} if $p_{\frac{n}{2}}=q_{\frac{n}{2}}$ and $p_{\frac{n}{2}+1}=q_{\frac{n}{2}+1}$ holds.
+\label{defn:center-equal}
+\end{defn}
+
+\begin{cor}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. If $(n, p, q)$ is solvable, then it is center-equal.
+\label{cor:center invariant}
+\end{cor}
+
+\begin{defn}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. We call $i\in L$ swappable if
+\begin{align}
+\mathrm{one}_i^{n}(p)
+&> 
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
+\quad\textrm{and}
+\label{eq:condition i and n swappable -> ones greater}
+\\
+\mathrm{zero}_i^{n}(p)
+&> 
+\overline{\mathrm{zero}}_i^{n}(p)
+-
+p_i+p_n
+\label{eq:condition i and n swappable -> zeros greater}
+\end{align}
+holds. Analogously, we call $j\in R$ swappable if
+\begin{align}
+\mathrm{one}_1^{j}(p)
+&> 
+\overline{\mathrm{one}}_1^{j}(p)
++
+p_j-p_1
+\quad\textrm{and}
+\label{eq:condition 1 and j swappable -> ones greater}
+\\
+\mathrm{zero}_1^{j}(p)
+&> 
+\overline{\mathrm{zero}}_1^{j}(p)
+-
+p_j+p_1
+\label{eq:condition 1 and j swappable -> zeros greater}
+\end{align}
+holds.
+If all $\{i\in L \mid p_i\neq q_i\}$ and $\{j\in R \mid p_j\neq q_j\}$ are swappable, we call $(n, p, q)$ swappable.
+\end{defn}
+\noindent This means that $(i, n)$ can swap as soon as $p_n$ takes on the value of $p_i$, resp.\ $(1, j)$ can swap as soon as $p_1$ takes on the value of $p_j$.
+
+\begin{prop}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. If $i\in L, j\in R$ can swap, then both are swappable.
+\begin{proof}
+Since $(i, j)$ can swap, $p_i=p_j$. Moreover, by assumption inequalities \eqref{eq:condition for swap -> ones_greater} and \eqref{eq:condition for swap -> zeros_greater} hold.
+
+Consider the case $j=n$. Then $p_i=p_n$ and inequalities \eqref{eq:condition i and n swappable -> ones greater} and \eqref{eq:condition i and n swappable -> zeros greater} follow, so $i$ is swappable.
+
+Now consider $j<n$. Then
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&=
+\mathrm{one}_i^{j}(p)
++
+\mathrm{one}_{j-1}^{n}(p)
+\\
+&\geq 
+\mathrm{one}_i^{j}(p)
++
+p_j+p_n
+%\\
+%\overline{\mathrm{one}}_i^{n}(p)
+%&\leq
+%\overline{\mathrm{one}}_i^{j}(p)
+%-
+%p_j-p_n
+\\
+&>
+\overline{\mathrm{one}}_i^{j}(p)
++
+p_j+p_n
+\quad\textrm{by inequality \eqref{eq:condition for swap -> ones_greater}}
+\\
+&=
+\overline{\mathrm{one}}_i^{j}(p)
++
+p_i+p_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i+p_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
+\end{align*}
+and so inequality \eqref{eq:condition i and n swappable -> ones greater} holds. Analogously, inequality \eqref{eq:condition i and n swappable -> zeros greater} follows, and thus $i$ is swappable.
+By symmetry, $j$ is swappable as well.
+\end{proof} 
+\label{prop:if i j can swap, they are swappable}
+\end{prop}
+
+\begin{prop}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. If $i\in L$ is not swappable, then no $i'\in L$ with $i'\geq i$ can swap. If $j\in R$ is not swappable, then no $j'\in R$ with $j'\leq j$ can swap.
+\begin{proof}
+By assumption
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n.
+\end{align*}
+It follows that
+\begin{align*}
+\mathrm{one}_{i'}^{n}(p)
+&\leq
+\mathrm{one}_{i}^{n}(p)
+-
+p_{i'}
+\\
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
+-
+p_{i'}
+\\
+&\leq
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-p_i
++
+p_i-p_n
+-
+p_{i'}
+\\
+&=
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-p_n
+-
+p_{i'}
+\\
+&\leq
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-p_n
++
+p_{i'}
+\end{align*}
+and, with an analogous argument for the number of zeros, and by symmetry, the claim follows.
+\end{proof}
+\label{prop:i not swappable => i'>i not swappable}
+\end{prop}
+
+\begin{prop}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. If $i\in L$ is swappable, then all $i'\in L$ with $i'\leq i$ are swappable. If $j\in R$ is swappable, then all $j'\in R$ with $j'\geq j$ are swappable.
+\begin{proof}
+By assumption
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&>
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n.
+\end{align*}
+It follows that
+\begin{align*}
+\mathrm{one}_{i'}^{n}(p)
+&\geq
+\mathrm{one}_{i}^{n}(p)
++
+p_{i}
+\\
+&>
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n
++
+p_{i}
+\\
+&\geq
+\overline{\mathrm{one}}_{i'}^{n}(p)
++ p_{i'}
++ p_i-p_n
++ p_{i}
+\\
+&\geq
+\overline{\mathrm{one}}_{i'}^{n}(p)
++p_{i'}-p_n
+\end{align*}
+and, with an analogous argument for the number of zeros, and by symmetry, the claim follows.
+\end{proof}
+\label{prop:i swappable => i'<i swappable}
+\end{prop}
+
+
+\begin{lem}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. An index $i\in N$ is swappable for $(n, p, q)$ if and only if it is swappable for every $(n, p', q)$ with $p'\sim p$.
+\begin{proof}
+We first show: $i\in L$ swappable $\Rightarrow$ $i$ is swappable for every $(n, p', q)$ with $p'\sim p$. It suffices to show that $i$ remains swappable after an arbitrary swap.
+So consider a swap $(i', j)$ with $i'\neq i$.
+Since $(i', j)$ can swap, they are also swappable by Proposition \ref{prop:if i j can swap, they are swappable}. Let $p' = \tau_{i'j}(p)$.
+We distinguish 4 cases:
+\begin{enumerate}
+
+\item
+$i'>i$ and $j=n$: By assumption
+\begin{align}
+\mathrm{one}_{i}^{n}(p')
+&\geq
+\mathrm{one}_{i'}^{n}(p')
++
+p'_{i'}
+\quad\textrm{since }j=n
+\label{lem_eq:one_in geq one_i'n + p'i'}
+\\
+\overline{\mathrm{one}}_{i}^{n}(p)
+&\leq
+\overline{\mathrm{one}}_{i'}^{n}(p)
+-
+p_{i}
+\label{lem_eq:one_bar_in(p) <= one_bar_i'n(p) - p_i}
+\\
+\mathrm{one}_{i'}^{n}(p)
+&=
+\mathrm{one}_{i'}^{n}(p')
+\label{lem_eq:one_i'n(p) = one_i'n(p')}
+\\
+\overline{\mathrm{one}}_{i}^{n}(p)
+&=
+\overline{\mathrm{one}}_{i}^{n}(p')
+\label{lem_eq:one_bar_in(p) = one_bar_in(p')}
+\end{align}
+we conclude
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&\geq
+\mathrm{one}_{i'}^{n}(p')
++
+p'_{i'}
+\quad\textrm{inequality \eqref{lem_eq:one_in geq one_i'n + p'i'}}
+\\
+&=
+\mathrm{one}_{i'}^{n}(p)
++
+p'_{i'}
+\quad\textrm{equation \eqref{lem_eq:one_i'n(p) = one_i'n(p')}}
+\\
+&>
+\overline{\mathrm{one}}_{i'}^{n}(p)
++
+\underbrace{p'_{i'}+p_{i'}}_{=1}-p_n
+\quad \textrm{by inequality \eqref{eq:condition i and n swappable -> ones greater}}
+\\
+&=
+\overline{\mathrm{one}}_{i'}^{n}(p)
++
+1-p_n
+\\
+&\geq
+\overline{\mathrm{one}}_{i}^{n}(p)
++p_i
++
+1-p_n
+\quad\textrm{equation \eqref{lem_eq:one_bar_in(p) <= one_bar_i'n(p) - p_i}}
+\\
+&=
+\overline{\mathrm{one}}_{i}^{n}(p')
++p_i
++
+1-p_n
+\quad\textrm{equation \eqref{lem_eq:one_bar_in(p) = one_bar_in(p')}}
+\\
+&=
+\overline{\mathrm{one}}_{i}^{n}(p')
++p_i
++
+p'_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p')
++
+p'_i-p'_n.
+\end{align*}
+Analogous estimates for the number of zeros give swappability of $i$ for $p'$.
+
+\item
+$i'>i$ and $j<n$: Then $p'_i = p'_n = p_i=p_n$. It follows that
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&\geq
+\mathrm{one}_{i'}^{j}(p')
++
+p'_{i'}
++
+p'_n
+\\
+&>
+\overline{\mathrm{one}}_{i'}^{j}(p')
++
+p'_{i'}
++
+p'_n
+\quad\textrm{since $(i', j)$ can swap in $p'$}
+\\
+&\geq
+\overline{\mathrm{one}}_{i}^{n}(p')
++
+p'_i
++
+p'_n
++
+p'_{i'}
++
+p'_n
+\\
+&\geq
+\overline{\mathrm{one}}_i^{n}(p')
++
+p'_i-p'_n.
+\end{align*}
+With an analogous estimate for the number of zeros, $i$ remains swappable after the swap.
+
+\item
+$i'<i$ and $j<n$:
+Here
+\begin{align*}
+\mathrm{one}_i^n(p')
+&=
+\mathrm{one}_i^n(p)
++ p'_j - p_j
+\\
+&> 
+\overline{\mathrm{one}}_i^{n}(p)
+ + p_i-p_n
+ + p'_j - p_j
+\quad \textrm{by inequality \eqref{eq:condition i and n swappable -> ones greater}}
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+- p'_{i'} + p_{i'}
+ + p_i-p_n
+ + p'_j - p_j
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+ + p_i-p_n.
+\end{align*}
+With an analogous estimate for the number of zeros, $i$ thus remains swappable after the swap.
+\item It remains to consider the case $i'<i$ and $j=n$.
+%\begin{align*}
+%\overline{\mathrm{one}}_i^n(p')
+%&=
+%\overline{\mathrm{one}}_i^n(p)
+%+ p'_{i'} - p_{i'}
+%\\
+%\mathrm{one}_i^{n}(p)
+%&> 
+%\overline{\mathrm{one}}_i^{n}(p)
+%+
+%p_i-p_n
+%\\
+%p_{i'} &= p_n
+%\\
+%p'_{i'} &= p'_n \neq p_n
+%\\
+%\overline{\mathrm{one}}_i^n(p')
+%&=
+%\overline{\mathrm{one}}_i^n(p)
+%+p'_{i'}-p_{i'}
+%\\
+%p_i
+%&=
+%p'_i
+%\end{align*}
+Here
+\begin{align*}
+\mathrm{one}_i^n(p')
+&=
+\mathrm{one}_i^n(p)
+\\
+&> 
+\overline{\mathrm{one}}_i^{n}(p)
+ + p_i-p_n
+\quad \textrm{by inequality \eqref{eq:condition i and n swappable -> ones greater}}
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+- p'_{i'} + p_{i'}
+ + p_i-p_n
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+-p'_{i'} + p_{i}
+\\
+&=
+\overline{\mathrm{one}}_i^n(p')
+-p'_{n} + p'_{i}.
+\end{align*}
+With analogous reasoning for the number of zeros, $i$ remains swappable.
+\end{enumerate}
+Overall, swappability is thus preserved. It remains to show that non-swappability is also preserved. So suppose
+\begin{align*}
+\mathrm{one}_i^{n}(p)
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++
+p_i-p_n.
+\end{align*}
+\begin{enumerate}
+\item
+$i'>i$: This case cannot occur, since by Proposition \ref{prop:i not swappable => i'>i not swappable} such an $i'$ is not swappable.
+
+\item
+$i'<i$ and $j<n$:
+Here
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&=
+\mathrm{one}_{i}^{n}(p)
++ p'_j - p_j
+\\
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++ p_i - p_n
++ p'_j - p_j
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+-p'_{i'} + p_{i'}
++ p_i - p_n
++ p'_j - p_j
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
++ p_i - p_n
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
++ p'_i - p'_n
+\end{align*}
+and, by the same argument as before, $i$ remains non-swappable.
+
+\item $i'<i$ and $j=n$:
+Here
+\begin{align*}
+\mathrm{one}_{i}^{n}(p')
+&=
+\mathrm{one}_{i}^{n}(p)
+\\
+&\leq
+\overline{\mathrm{one}}_i^{n}(p)
++ p_i - p_n
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+-p'_{i'} + p_{i'}
++ p_i - p_n
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+-p'_{i'} + p_{i} 
+\\
+&=
+\overline{\mathrm{one}}_i^{n}(p')
+- p'_n + p'_i
+\end{align*}
+and again, by the same argument as above, $i$ remains non-swappable.
+\end{enumerate}
+Overall, it follows that non-swappability of $i\in L$ is preserved under swaps, and by symmetry we can extend this property to $i\in N$.
+\end{proof}
+
+\label{lem:swappable once swappable always}
+\end{lem}
+
+\begin{cor}
+Given $(n, p, q)$ swappable. Every $(n, p', q)$ with $p'\sim p$ is swappable.
+\label{cor:swappable once swappable always}
+\end{cor}
+
+
+\begin{defn}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. We define the left balance $b_L(p)$ and the right balance $b_R(p)$ by
+\begin{align*}
+b_L(p) &=\#\{i\in L \mid p_i=1, q_i=0\}
+-
+\#\{i\in L \mid p_i=0, q_i=1\}
+\\
+b_R(p) &= \#\{j\in R \mid p_j=1, q_j=0\}
+-
+\#\{j\in R \mid p_j=0, q_j=1\}
+\end{align*}
+We call $p$ balanced if
+\begin{align*}
+b_L(p) &= b_R(p).
+\end{align*}
+\end{defn}
+
+
+\begin{lem}
+ Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. For $(n, p, q)$ to be solvable, $p$ must be balanced.
+\begin{proof}
+By Corollary \ref{cor:swap only from L and R}, every swap increases or decreases the left balance and the right balance simultaneously by 1. In particular, the difference between the two balances never changes. Since $b_L(p)=b_R(p)=0$ trivially holds in the case $p=q$, $p$ must be balanced.
+\end{proof}
+\label{lem_balanced}
+\end{lem}
+
+\begin{defn}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. We define
+\begin{align*}
+\sigma(n, p, q) 
+&=\#\{i\in N \mid p_i\neq q_i\}.
+\end{align*}
+\end{defn}
+
+\begin{lem}
+Given $(n, p, q)$ swappable and balanced with $\sigma(n, p, q)>0$. Then there exists $(n, p', q)$ swappable with $p'\sim p$ and $\sigma(n, p, q)\geq\sigma(n, p', q)$, where swappable $i\in L$ and $j\in R$ exist with $p_i=p_j\neq q_i=q_j$.
+\begin{proof}
+ For $i\in L$ we may assume without loss of generality that $p_i=0, q_i=1$.
+ Since the problem is balanced, there is either a $j\in R$ with $p_j=0, q_j=1$ or an $i'\in L$ with $p_{i'}=1, q_{i'}=0$. In the first case we would already be done. In the second case we use the fact that $i$ and $i'$ are swappable, and can swap one of the two with $n$.
+\end{proof}
+\label{lem:swap on both sides}
+\end{lem}
+
+
+\begin{thm}
+Let $(n, p, q)$ be as in Definition \ref{defn:problem description}. Then $(n, p, q)$ is solvable if and only if it is center-equal, balanced, and swappable.
+\begin{proof}
+That a solvable $(n,p,q)$ must be center-equal follows from Corollary \ref{cor:center invariant}. That a solvable $p$ must also be balanced follows from Lemma \ref{lem_balanced}. That a solvable $p$ also implies that $(n, p, q)$ is swappable is clear from Corollary \ref{cor:swappable once swappable always} as well. For the converse direction we assume that $(n,p,q)$ is center-equal, balanced, and swappable, and suppose the problem were nevertheless not solvable. Then we can keep performing swaps until we reach a smallest number of unsatisfiable swaps. Consider the corresponding $\bar{p}\sim p$. Then $\sigma(n, \bar{p}, q)>0$. Moreover, since $\bar{p}\sim p$, $(n, \bar{p}, q)$ is also swappable by Corollary \ref{cor:swappable once swappable always}.
+Since $(n,p,q)$ is center-equal, $p_{\frac{n}{2}}=q_{\frac{n}{2}}$ and $p_{\frac{n}{2}+1}=q_{\frac{n}{2}+1}$ hold, and by Corollary \ref{cor:center invariant} applied to $\bar p\sim p$, we also have $\bar p_{\frac{n}{2}}=q_{\frac{n}{2}}$ and $\bar p_{\frac{n}{2}+1}=q_{\frac{n}{2}+1}$. Hence $\sigma(n,\bar p, q)>0$ can only be caused by an index in $L\cup R$, i.e.\ there is $i\in L$ with $\bar p_i\neq q_i$ or $j\in R$ with $\bar p_j\neq q_j$ -- exactly the hypothesis required by Lemma \ref{lem:swap on both sides}.
+By Lemma \ref{lem:swap on both sides} we may therefore assume that $i\in L$ and $j\in R$ exist with $p_i=p_j\neq q_i=q_j$.
+Now there are two cases:
+\begin{enumerate}
+ \item $\bar{p}_1 = \bar{p}_n$: If $\bar{p}_i=\bar{p}_j=\bar{p}_1=\bar{p}_n$, we set $p'=(\tau_{in}\circ\tau_{1j})(\bar{p})$, otherwise $p'=(\tau_{in}\circ\tau_{1j}\circ\tau_{1n})(\bar{p})$.
+ \item $\bar{p}_1 \neq \bar{p}_n$: Here we assume without loss of generality that $\bar{p}_i=\bar{p}_n$. We then set $p'=(\tau_{1j}\circ\tau_{1n}\circ\tau_{in})(\bar{p})$.
+\end{enumerate}
+In every case, by performing further swaps we obtain $(n, p', q)$ with $\sigma(n, p', q)<\sigma(n, \bar{p}, q)$, a contradiction.
+\end{proof}
+\label{thm}
+\end{thm}
+
+\begin{cor}
+It can be determined in $O(n)$ time whether the problem is solvable.
+\begin{proof}
+By Theorem \ref{thm} we only need to check whether $(n, p, q)$ is center-equal, balanced, and swappable.
+Whether $(n,p,q)$ is center-equal can be checked directly from the two values $p_{\frac{n}{2}}, q_{\frac{n}{2}}$ and $p_{\frac{n}{2}+1}, q_{\frac{n}{2}+1}$ in $O(1)$. The balances can be computed in $O(n)$. Afterwards, by Proposition \ref{prop:i swappable => i'<i swappable}, one only needs to check whether $\max_{i\in L, p_i\neq q_i} i$ is swappable with $n$ and whether $\min_{j\in R, p_j\neq q_j} j$ is swappable with $1$. Each of these can be done in $O(n)$ time with $O(1)$ memory.
+\end{proof}
+\end{cor}
+
+\end{document}

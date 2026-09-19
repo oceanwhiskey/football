@@ -1,0 +1,449 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{margin=2.6cm}
+
+\newtheorem{theorem}{Satz}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Korollar}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\str}[1]{\mathtt{#1}}
+\newcommand{\YES}{\texttt{YES}}
+\newcommand{\NO}{\texttt{NO}}
+
+\title{L\"osung: Transfers zwischen zwei Fu\ss ballmannschaften}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Wir charakterisieren die erreichbaren Endaufstellungen durch eine einzige
+kanonische Teilzeichenkette.  Daraus ergibt sich ein Algorithmus mit
+linearer Laufzeit.  In dieser Datei wird die L\"osung vollst\"andig
+bewiesen.
+\end{abstract}
+
+\section{Problem}
+
+Es sei $n$ gerade.  Jeder Spieler geh\"ort zu Team $A$ oder Team $B$.
+Eine Aufstellung ist ein Wort $s\in\{A,B\}^n$; die Positionen nummerieren
+wir von $0$ bis $n-1$.
+
+Ein \emph{Transfer} wird durch zwei Positionen $i<j$ mit $s_i=s_j=T$
+beschrieben.  Die beiden Spieler wechseln beide in das andere Team.
+Alle \"ubrigen Spieler stimmen ab: Spieler $x$ stimmt mit \emph{Ja},
+wenn $i<x<j$, sonst mit \emph{Nein}.  Der Transfer ist genau dann
+zul\"assig, wenn in beiden Teams die Ja-Stimmen die Nein-Stimmen
+\"uberwiegen.
+
+Gesucht ist, ob eine gegebene Startaufstellung $p$ durch eine Folge
+zul\"assiger Transfers in eine Zielaufstellung $q$ \"uberf\"uhrt werden
+kann.
+
+\section{Die Invariante}
+
+Im gesamten Abschnitt sei $s\in\{A,B\}^n$ eine Aufstellung, in der beide
+Teams eine ungerade Spielerzahl haben.  Diese Eigenschaft bleibt unter
+jedem Transfer erhalten: Wechseln zwei Spieler des Teams $T$, so nimmt
+$|T|$ um $2$ ab und die andere Mannschaft um $2$ zu; beide Anzahlen
+bleiben also ungerade.
+
+Seien
+\[
+|A|=2a+1,\qquad |B|=2b+1.
+\]
+F\"ur ein Team $T\in\{A,B\}$ bezeichne $\mu_T(s)$ die Position des
+mittleren Vorkommens von $T$; das ist das $(k_T+1)$-te Vorkommen von
+links, wenn $|T|=2k_T+1$.
+
+\begin{definition}
+Setze
+\[
+\ell(s)=\min\{\mu_A(s),\mu_B(s)\},
+\qquad
+r(s)=\max\{\mu_A(s),\mu_B(s)\},
+\]
+und nenne
+\[
+K(s)=s_{\ell(s)}\cdots s_{r(s)}
+\]
+den \emph{Kern} von $s$.  Die Randbuchstaben des Kerns sind
+$X=s_{\ell(s)}$ und $Y=s_{r(s)}$; es gilt $X\ne Y$, weil die beiden
+Medianpositionen verschieden sind.
+\end{definition}
+
+Wir schreiben f\"ur eine Positionenmenge $M\subseteq\{0,\dots,n-1\}$
+kurz $\#_T(M)$ f\"ur die Anzahl der Spieler von Team $T$ in $M$.
+
+\begin{lemma}
+\label{lem:votes}
+Es sei $i<j$ und $s_i=s_j=T$.  Das andere Team sei $U$.  F\"ur
+$T=A$ ist der Transfer genau dann zul\"assig, wenn
+\[
+\#_A(i,j)\ge a
+\qquad\text{und}\qquad
+\#_B(i,j)\ge b+1.
+\]
+F\"ur $T=B$ lauten die Bedingungen entsprechend
+\[
+\#_A(i,j)\ge a+1
+\qquad\text{und}\qquad
+\#_B(i,j)\ge b.
+\]
+Dabei bedeutet $\#_T(i,j)$ die Anzahl der $T$-Spieler im offenen
+Intervall $(i,j)$.
+\end{lemma}
+
+\begin{proof}
+Wir behandeln $T=A$.  Von den $2a+1$ Spielern des Teams $A$ sind $i$
+und $j$ nicht stimmberechtigt.  Liegen $x$ dieser verbleibenden
+$2a-1$ Spieler in $(i,j)$, so liegen $2a-1-x$ au\ss erhalb.  Die
+Ja-Stimmen \"uberwiegen genau dann, wenn $x>2a-1-x$, also
+$x\ge a$.
+
+Beim Team $B$ sind $i,j$ keine $B$-Spieler.  Von $2b+1$ Spielern
+liegen $y$ in $(i,j)$ und $2b+1-y$ au\ss erhalb.  Mehr Ja- als
+Nein-Stimmen bedeuten $y>2b+1-y$, also $y\ge b+1$.
+\end{proof}
+
+\begin{lemma}
+\label{lem:straddle}
+Ist der Transfer des Paares $(i,j)$ mit $s_i=s_j=T$ zul\"assig, so
+gilt
+\[
+i<\ell(s)<r(s)<j.
+\]
+Insbesondere liegen die beiden gewechselten Spieler au\ss erhalb des
+Kerns.
+\end{lemma}
+
+\begin{proof}
+Es sei $T=A$; der Fall $T=B$ ist symmetrisch.  Wir zeigen zuerst
+$i<\ell(s)$ und nehmen dazu $i\ge\ell(s)$ an.
+
+Falls $\ell(s)=\mu_B(s)$ ist, so stehen rechts von $\ell(s)$ genau
+$b$ Vorkommen von $B$.  Wegen $i\ge\ell(s)$ ist $(i,j)$ eine
+Teilmenge der Positionen rechts von $\ell(s)$, enth\"alt also
+h\"ochstens $b$ Vorkommen von $B$.  Nach
+Lemma~\ref{lem:votes} sind f\"ur Team $B$ aber mindestens $b+1$
+Ja-Stimmen n\"otig, ein Widerspruch.
+
+Falls dagegen $\ell(s)=\mu_A(s)$ ist, so stehen rechts von
+$\ell(s)$ genau $a$ Vorkommen von $A$.  Das offene Intervall
+$(i,j)$ schlie\ss t die Position $j$ aus, die ebenfalls ein $A$ ist;
+folglich enth\"alt $(i,j)$ h\"ochstens $a-1$ Vorkommen von $A$.  F\"ur
+Team $A$ sind aber mindestens $a$ Ja-Stimmen n\"otig.  Also ist
+$i<\ell(s)$.
+
+Dasselbe Argument, von rechts gelesen, liefert $j>r(s)$.
+\end{proof}
+
+\begin{theorem}
+\label{thm:invariant}
+Ist $t$ aus $s$ durch einen zul\"assigen Transfer entstanden, so gilt
+\[
+\ell(t)=\ell(s),\qquad r(t)=r(s),\qquad K(t)=K(s).
+\]
+\end{theorem}
+
+\begin{proof}
+Nach Lemma~\ref{lem:straddle} liegt das Transferpaar vollst\"andig
+au\ss erhalb des Intervalls $[\ell(s),r(s)]$.  Deshalb \"andert sich die
+Teilzeichenkette $K(s)$ nicht.
+
+Es bleibt zu zeigen, dass die beiden Medianpositionen gleich bleiben.
+Sei wieder $T=A$ das Team der beiden Transferpositionen $i<j$.
+
+F\"ur Team $A$ liegen vor dem Median $\mu_A(s)$ genau $a$ Vorkommen und
+rechts davon genau $a$.  Durch den Transfer wird ein $A$ links und ein
+$A$ rechts vom Median entfernt.  Danach hat Team $A$ die Gr\"o\ss e
+$2a-1=2(a-1)+1$, und vor der alten Medianposition liegen genau $a-1$
+Vorkommen von $A$.  Also bleibt $\mu_A(s)$ der Median.
+
+F\"ur Team $B$ entstehen an den Positionen $i$ und $j$ zwei neue
+$B$-Spieler, einer links und einer rechts von $\mu_B(s)$.  Dadurch
+erh\"ohen sich die Anzahlen der $B$ auf beiden Seiten des Medians um
+jeweils eins.  Aus $|B|=2b+1$ wird $|B|=2b+3=2(b+1)+1$, und vor der
+alten Medianposition liegen nun $b+1$ Vorkommen von $B$.  Also bleibt
+$\mu_B(s)$ der Median.  Der Fall $T=B$ ist identisch.
+\end{proof}
+
+\section{Vollst\"andigkeit der Invariante}
+
+Die Umkehrung von Satz~\ref{thm:invariant} ist ebenfalls richtig:
+Zwei Aufstellungen mit demselben Kern sind stets ineinander
+\"uberf\"uhrbar.
+
+\begin{theorem}
+\label{thm:complete}
+Sind $s,t\in\{A,B\}^n$ g\"ultige Aufstellungen und ist
+$K(s)=K(t)$, so gibt es eine Folge zul\"assiger Transfers, die $s$ in
+$t$ \"uberf\"uhrt.
+\end{theorem}
+
+\begin{proof}
+Es gen\"ugt zu zeigen, dass jede Aufstellung mit einem festen Kern in
+eine gemeinsame Normalform \"uberf\"uhrt werden kann, denn Transfers
+sind umkehrbar: Ist $s\to t$ ein zul\"assiger Transfer, so ist auch
+der umgekehrte Transfer $t\to s$ zul\"assig.  Dies folgt unmittelbar
+aus Lemma~\ref{lem:votes}, weil sich beide Teamgr\"o\ss en genau um $2$
+\"andern und die Ja/Nein-Bedingungen dadurch symmetrisch werden.
+
+Wir behandeln zun\"achst den Fall, dass der Kern mit $A$ beginnt und
+mit $B$ endet:
+\[
+K=s_\ell\cdots s_r=A\cdots B.
+\]
+Der andere Fall $B\cdots A$ entsteht daraus durch Vertauschen der
+Namen $A$ und $B$.
+
+Setze
+\[
+P=s_0\cdots s_{\ell-1},\qquad
+S=s_{r+1}\cdots s_{n-1}.
+\]
+Sei $\alpha$ die Anzahl der $A$ und $\beta$ die Anzahl der $B$ im
+Inneren des Kerns, also auf den Positionen $\ell+1,\dots,r-1$.  Sei
+ferner $y=\#_A(S)$ und $b=\#_B(S)$.
+
+Aus $\ell=\mu_A$ folgt $\#_A(P)=a$, wobei $|A|=2a+1$.  Z\"ahlt man
+alle $A$, so ergibt sich
+\[
+a=\alpha+y.
+\]
+Aus $r=\mu_B$ folgt, dass vor $r$ genau so viele $B$ stehen wie nach
+$r$.  Nach $r$ stehen $b$ viele $B$, also ist $|B|=2b+1$; vor $r$
+stehen $\#_B(P)+\beta$ viele $B$, also
+\[
+\#_B(P)=b-\beta.
+\]
+Damit hat $P$ genau $a$ Buchstaben $A$ und $b-\beta$ Buchstaben $B$,
+w\"ahrend $S$ genau $y$ Buchstaben $A$ und $b$ Buchstaben $B$ hat.
+
+Zuerst eliminieren wir alle $A$ aus $S$.  F\"ur $y>0$ definieren wir
+\begin{align*}
+u&=\#\{x\in P:\text{$x$ liegt vor dem ersten $A$ in $P$ und }
+s_x=B\},\\
+v&=\#\{x\in S:\text{$x$ liegt nach dem letzten $A$ in $S$ und }
+s_x=B\}.
+\end{align*}
+Anschaulich ist $u$ die L\"ange des anf\"anglichen $B$-Blocks in $P$,
+und $v$ die L\"ange des abschlie\ss enden $B$-Blocks in $S$.
+
+\begin{lemma}
+\label{lem:A-criterion}
+Ist $y>0$, $p$ das erste $A$ in $P$ und $q$ das letzte $A$ in $S$,
+so ist der Transfer $(p,q)$ genau dann zul\"assig, wenn
+$u+v\le b$.
+\end{lemma}
+
+\begin{proof}
+Da $p$ das erste $A$ in $P$ ist, liegen nach $p$ in $P$ genau $a-1$
+Vorkommen von $A$ und $b-\beta-u$ Vorkommen von $B$.  Da $q$ das
+letzte $A$ in $S$ ist, liegen vor $q$ in $S$ genau $y-1$ Vorkommen
+von $A$ und $b-v$ Vorkommen von $B$.  Im offenen Intervall $(p,q)$
+liegen zus\"atzlich der ganze Kern mit seinen Randbuchstaben, also
+$\alpha+1$ Vorkommen von $A$ und $\beta+1$ Vorkommen von $B$.
+
+Somit ist
+\[
+\#_A(p,q)=(a-1)+(\alpha+1)+(y-1)
+=a+\alpha+y-1=2a-1\ge a.
+\]
+Weiter ist
+\[
+\#_B(p,q)=(b-\beta-u)+(\beta+1)+(b-v)
+=2b+1-u-v.
+\]
+Nach Lemma~\ref{lem:votes} ist der $A$-Transfer genau dann zul\"assig,
+wenn $\#_B(p,q)\ge b+1$, also genau dann, wenn $u+v\le b$.
+\end{proof}
+
+Wir zeigen nun, dass jedes Wort mit $y>0$ durch legale Transfers zu
+einem Wort mit kleinerem Paar $(y,v)$ in lexikographischer Ordnung
+gef\"uhrt werden kann.
+
+Ist $u+v\le b$, so benutzen wir den Transfer aus
+Lemma~\ref{lem:A-criterion}.  Er verwandelt das erste $A$ in $P$ und
+das letzte $A$ in $S$ in $B$, verringert also $y$ um eins.  Damit
+sinkt $(y,v)$.
+
+Sei nun $u+v>b$.  Wegen $u\le \#_B(P)=b-\beta\le b$ und $v\le b$
+folgt $u\ge1$ und $v\ge1$.  Also beginnt $P$ mit $B$ und $S$ endet
+mit $B$.  Sei $p_B$ das erste $B$ in $P$ (also $P_0$) und $q_B$ das
+letzte $B$ in $S$.  Dieser $B$-Transfer ist zul\"assig: Im Inneren
+liegen
+\[
+\#_A(p_B,q_B)=a+(\alpha+1)+y=2a+1\ge a+1
+\]
+und
+\[
+\#_B(p_B,q_B)=(b-\beta-1)+(\beta+1)+(b-1)
+=2b-1\ge b.
+\]
+Nach diesem Transfer sind $P_0$ und $S_{-1}$ zu $A$ geworden;
+insbesondere beginnt $P$ mit $A$, und $S$ hat ein $A$ an seiner
+letzten Position.
+
+Sei $p_A=P_0$ und $q_A$ das erste $A$ in $S$.  Da $S$ vorher
+mindestens ein $A$ besa\ss\ ($y>0$) und der $B$-Transfer nur das letzte
+$B$ in $S$ ver\"andert hat, ist $q_A$ das urspr\"ungliche erste $A$ von
+$S$.  Der Transfer $(p_A,q_A)$ ist zul\"assig: F\"ur das nach dem
+$B$-Transfer entstandene Wort $t$ gilt
+\[
+\#_A(p_A,q_A)=a+(\alpha+1)=a+\alpha+1\ge a+1
+\]
+und
+\[
+\#_B(p_A,q_A)
+=(b-\beta-1)+(\beta+1)+(b-v)
+=2b-v\ge b.
+\]
+Hier ist die rechte Seite die nach Lemma~\ref{lem:votes} geforderte
+Schwelle, denn in $t$ ist $|A|=2a+3$ und $|B|=2b-1$.
+
+Nach diesem zweiten Transfer ist $P_0$ wieder $B$, also ist $P$
+unver\"andert gegen\"uber dem Ausgangswort.  In $S$ wurde das erste $A$
+zu $B$ und das letzte $B$ zu $A$.  Folglich hat das neue $S$ weiterhin
+genau $y$ Vorkommen von $A$, und sein letzter Buchstabe ist $A$, also
+$v=0$.  Aus $(y,v)$ wurde damit $(y,0)$, und wegen $v\ge1$ ist das
+lexikographisch kleiner.
+
+Da $y$ und $v$ beschr\"ankt sind, erreichen wir nach endlich vielen
+Schritten $y=0$.  Dann ist $S=B^b$.
+
+Jetzt ordnen wir noch $P$.  Bei $y=0$ ist $a=\alpha$, also enth\"alt
+$P$ genau $\alpha$ Vorkommen von $A$ und $b-\beta$ Vorkommen von $B$.
+Ist $b=0$, so ist $S$ leer, $\beta=0$, und $P$ besteht nur aus $A$;
+dieser Fall ist bereits normalisiert.  Sei also $b>0$.
+
+Wir schreiben $P$ in die Zielreihenfolge
+\[
+B^{b-\beta}A^{\alpha}.
+\]
+Sei
+\[
+I(P)=\#\{(x,z):x<z,\ P_x=A,\ P_z=B\}
+\]
+die Anzahl der Inversionen von $P$ bez\"uglich dieser Zielreihenfolge.
+Ist $I(P)>0$, so w\"ahle $p_A<p_B$ mit $P_{p_A}=A$ und
+$P_{p_B}=B$.
+
+Zuerst transferieren wir $p_B$ mit dem letzten $B$ von $S$.  Dieser
+$B$-Transfer ist zul\"assig: Ist $r_B$ die Anzahl der $A$ vor $p_B$
+und $h_B$ die Anzahl der $B$ vor $p_B$, so ist
+\[
+\#_A(p_B,q)=\alpha-r_B+(\alpha+1)
+\ge \alpha+1,
+\qquad
+\#_B(p_B,q)=(b-\beta-1-h_B)+(\beta+1)+(b-1)
+\ge b,
+\]
+weil $r_B\le\alpha$ und $h_B\le b-\beta-1\le b-1$.  Danach ist
+$p_B$ ein $A$, und $S=B^{b-1}A$.
+
+Nun transferieren wir $p_A$ mit dem einzigen $A$ in $S$.  Sei $r_A$
+die Anzahl der $A$ vor $p_A$ und $h_A$ die Anzahl der $B$ vor $p_A$.
+Nach dem ersten Transfer hat $P$ genau $\alpha+1$ Vorkommen von $A$
+und $b-\beta-1$ Vorkommen von $B$; au\ss erdem hat Team $A$ insgesamt
+$2\alpha+3$ und Team $B$ insgesamt $2b-1$ Spieler.  Der $A$-Transfer
+ist zul\"assig, denn
+\[
+\#_A(p_A,q)=\alpha-r_A+(\alpha+1)
+\ge\alpha+1,
+\qquad
+\#_B(p_A,q)=(b-\beta-1-h_A)+(\beta+1)+(b-1)
+\ge b,
+\]
+weil $r_A\le\alpha$ und $h_A\le b-\beta-1\le b-1$.  Nach dem
+zweiten Transfer ist $S$ wieder $B^b$, $p_A$ ist $B$ und $p_B$ ist
+$A$; alle anderen Positionen von $P$ sind unver\"andert.  Die beiden
+Buchstaben an $p_A$ und $p_B$ wurden also vertauscht.
+
+Ein solcher Tausch eines Paares $A$ vor $B$ verringert $I(P)$ streng:
+Das Paar $(p_A,p_B)$ selbst h\"ort auf, eine Inversion zu sein; jede
+Position zwischen $p_A$ und $p_B$ verliert genau eine beteiligte
+Inversion; und jedes $A$ links von $p_A$ verliert die Inversion mit
+$p_B$.  Nach endlich vielen solchen Tauschen ist $I(P)=0$, also
+\[
+P=B^{b-\beta}A^{\alpha}.
+\]
+
+Insgesamt ist damit jedes Wort mit Kern $A\cdots B$ in die
+Normalform
+\[
+N_K=B^{b-\beta}A^{\alpha}\,K\,B^{b}
+\]
+\"uberf\"uhrt worden.  Durch Vertauschen von $A$ und $B$ folgt der Fall
+$K=B\cdots A$.  Da die Normalform nur vom Kern abh\"angt, sind je zwei
+W\"orter mit demselben Kern ineinander \"uberf\"uhrbar.
+\end{proof}
+
+\section{Algorithmus}
+
+F\"ur ein Eingabewort $s$ berechnen wir seinen Kern in linearer Zeit.
+Ist eine der beiden Teamgr\"o\ss en gerade, so ist der Zustand von
+vornherein unzul\"assig; in diesem Fall liefert die folgende Funktion
+\texttt{None}.
+
+\begin{algorithm}[H]
+\caption{Kern eines Zustands}
+\begin{algorithmic}[1]
+\Function{Kern}{$s$}
+  \State $a\gets$ Anzahl der $A$ in $s$
+  \State $b\gets n-a$
+  \If{$a$ ist gerade oder $b$ ist gerade}
+    \State \Return \texttt{None}
+  \EndIf
+  \State $p_A\gets -1$, $p_B\gets -1$
+  \State $c_A\gets 0$, $c_B\gets 0$
+  \For{$i\gets 0$ bis $n-1$}
+    \If{$s_i=A$}
+      \If{$c_A=\lfloor a/2\rfloor$}
+        \State $p_A\gets i$
+      \EndIf
+      \State $c_A\gets c_A+1$
+    \Else
+      \If{$c_B=\lfloor b/2\rfloor$}
+        \State $p_B\gets i$
+      \EndIf
+      \State $c_B\gets c_B+1$
+    \EndIf
+  \EndFor
+  \State $\ell\gets\min(p_A,p_B)$, $r\gets\max(p_A,p_B)$
+  \State \Return $(\ell,r,s_{\ell}\cdots s_r)$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Da jede Position nur einmal betrachtet wird, ben\"otigt die Funktion
+$O(n)$ Zeit und $O(1)$ zus\"atzlichen Speicher.
+
+F\"ur jede Testfallgruppe $(n,p,q)$ berechnen wir $K(p)$ und $K(q)$.
+Die Antwort ist genau dann \YES, wenn beide Kerne existieren und gleich
+sind.  Bei $t$ Testf\"allen und $\sum n\le 2\cdot10^5$ ist die
+Gesamtlaufzeit
+\[
+O\Bigl(\sum n\Bigr).
+\]
+
+\section{Zusammenfassung}
+
+Die erreichbaren Aufstellungen sind genau die W\"orter mit demselben
+Kern $s_{\ell}\cdots s_r$, wobei $\ell$ und $r$ die Positionen der
+beiden Team-Mediane sind.  Der Kern ist eine Invariante, und die
+Normalformkonstruktion aus Abschnitt~3 zeigt, dass er vollst\"andig
+ist.  Damit entscheidet der lineare Kernvergleich das Problem korrekt.
+
+\end{document}

@@ -1,0 +1,429 @@
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,left=20mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+\newtheorem{satz}{Satz}[section]
+\newtheorem{definition}[satz]{Definition}
+\newtheorem{lemma}[satz]{Lemma}
+\newtheorem{proposition}[satz]{Proposition}
+\newtheorem{korollar}[satz]{Korollar}
+
+\newcommand{\card}[1]{\left\lvert #1\right\rvert}
+\newcommand{\teamcount}[2]{\#_{#1}(#2)}
+
+\title{Fußballspieler und Mehrheitswechsel\\
+       Eine Charakterisierung durch das Medianintervall}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Problembeschreibung}
+
+Es seien
+\[
+N=\{1,2,\ldots,n\},
+\qquad
+p=(p_1,p_2,\ldots,p_n)\in\{A,B\}^n.
+\]
+Der Eintrag $p_k$ bezeichnet die Mannschaft des Spielers an Position $k$.
+Zu Beginn besitzt jede der beiden Mannschaften eine ungerade Anzahl von
+Spielern.
+
+Zwei Spieler $i,j\in N$ mit $i<j$ und $p_i=p_j$ möchten gemeinsam zur
+anderen Mannschaft wechseln. Die Spieler an den Positionen $i$ und $j$
+stimmen nicht ab. Jeder andere Spieler stimmt genau dann mit \emph{Ja}, wenn
+seine Position strikt zwischen $i$ und $j$ liegt; andernfalls stimmt er mit
+\emph{Nein}.
+
+Für $c\in\{A,B\}$ definieren wir daher
+\begin{align*}
+Y_c(i,j;p)
+  &=\#\{k\in N\mid i<k<j,\ p_k=c\},\\
+Z_c(i,j;p)
+  &=\#\{k\in N\mid k<i\text{ oder }j<k,\ p_k=c\}.
+\end{align*}
+
+\begin{definition}[Zulässiger Wechsel]
+Ein Paar $(i,j)$ heißt in $p$ \emph{zulässig}, wenn
+\[
+i<j,\qquad p_i=p_j
+\]
+und beide Mannschaften dem Wechsel mit strikter Mehrheit zustimmen, also
+\[
+Y_A(i,j;p)>Z_A(i,j;p),
+\qquad
+Y_B(i,j;p)>Z_B(i,j;p).
+\]
+Für ein zulässiges Paar bezeichnet $\tau_{i,j}(p)$ den Vektor, der aus $p$
+durch Vertauschen der Mannschaftszugehörigkeit an den Positionen $i$ und $j$
+entsteht:
+\[
+(\tau_{i,j}(p))_k=
+\begin{cases}
+B,&k\in\{i,j\}\text{ und }p_k=A,\\
+A,&k\in\{i,j\}\text{ und }p_k=B,\\
+p_k,&k\notin\{i,j\}.
+\end{cases}
+\]
+\end{definition}
+
+\begin{definition}[Erreichbarkeit]
+Für $p,q\in\{A,B\}^n$ schreiben wir $p\sim q$, wenn $q$ aus $p$ durch eine
+endliche Folge zulässiger Wechsel entsteht. Die leere Folge ist erlaubt, also
+gilt stets $p\sim p$.
+\end{definition}
+
+Gesucht ist ein Algorithmus, der für ein gegebenes Anfangsmuster $p$ und ein
+Zielmuster $q$ entscheidet, ob $p\sim q$ gilt.
+
+\section{Grundlegende Beobachtungen}
+
+\begin{proposition}[Parität der Mannschaftsgrößen]
+Bei jedem Wechsel ändert sich die Größe jeder Mannschaft um genau zwei.
+Insbesondere bleiben die Paritäten beider Mannschaftsgrößen invariant.
+\end{proposition}
+
+\begin{proof}
+Die beiden wechselnden Spieler gehören vor dem Wechsel derselben Mannschaft
+an. Diese verliert zwei Spieler, während die andere Mannschaft zwei Spieler
+gewinnt.
+\end{proof}
+
+Da beide Mannschaftsgrößen in $p$ ungerade sind, ist $n$ die Summe zweier
+ungerader Zahlen und somit gerade. Außerdem kann ein Zielmuster mit einer
+geraden Mannschaftsgröße niemals erreicht werden.
+
+\begin{proposition}[Umkehrbarkeit]
+Jeder zulässige Wechsel ist umkehrbar.
+\end{proposition}
+
+\begin{proof}
+Nach dem Wechsel sind dieselben Spieler $i$ und $j$ erneut in derselben
+Mannschaft. Alle abstimmenden Spieler und ihre Positionen sind unverändert;
+folglich bleiben auch sämtliche Ja- und Nein-Stimmen unverändert. Der
+Rückwechsel wird daher von beiden Mannschaften mit derselben Mehrheit
+angenommen.
+\end{proof}
+
+\section{Medianen und Medianintervall}
+
+\begin{definition}[Mannschaftsmedian]
+Für ein Muster $s\in\{A,B\}^n$ sei
+\[
+P_c(s)=\{k\in N\mid s_k=c\}
+\qquad(c\in\{A,B\}).
+\]
+Ist $\card{P_c(s)}=2h_c+1$, so heißt die Position des $(h_c+1)$-ten
+Vorkommens von $c$ der \emph{Median} der Mannschaft $c$ und wird mit
+$m_c(s)$ bezeichnet.
+\end{definition}
+
+\begin{definition}[Mediansignatur]
+Besitzen beide Mannschaften in $s$ ungerade Größe, so setzen wir
+\begin{align*}
+L(s)&=\min\{m_A(s),m_B(s)\},\\
+R(s)&=\max\{m_A(s),m_B(s)\}
+\end{align*}
+und definieren die \emph{Mediansignatur}
+\[
+\Sigma(s)=
+\bigl(L(s),R(s),s_{L(s)}s_{L(s)+1}\cdots s_{R(s)}\bigr).
+\]
+Das Teilwort $s_{L(s)}\cdots s_{R(s)}$ heißt \emph{Medianintervall}.
+\end{definition}
+
+\begin{lemma}[Beide Medianen liegen im Wechselintervall]
+\label{lem:medianen-im-intervall}
+Ist $(i,j)$ in $s$ zulässig, so gilt
+\[
+i<m_A(s)<j
+\qquad\text{und}\qquad
+i<m_B(s)<j.
+\]
+\end{lemma}
+
+\begin{proof}
+Zunächst betrachten wir die Mannschaft $c=s_i=s_j$ der beiden Endpunkte.
+Sie besitze $2h+1$ Spieler. Die Endpunkte seien das $r$-te und das $t$-te
+Vorkommen von $c$, wobei $r<t$ gilt. Dann erhält diese Mannschaft
+\[
+t-r-1
+\]
+Ja-Stimmen und
+\[
+(r-1)+(2h+1-t)
+\]
+Nein-Stimmen. Aus der notwendigen Ungleichung
+\[
+t-r-1>(r-1)+(2h+1-t)
+\]
+folgt $t-r\ge h+1$. Daher kann weder $r\ge h+1$ noch $t\le h+1$ gelten;
+also liegt das $(h+1)$-te Vorkommen strikt zwischen den Endpunkten.
+
+Sei nun $d\ne c$ die andere Mannschaft mit $2k+1$ Spielern. Alle ihre
+Spieler stimmen ab. Eine strikte Ja-Mehrheit erfordert mindestens $k+1$
+Vorkommen von $d$ im offenen Intervall $(i,j)$. Die darin enthaltenen
+Vorkommen bilden einen zusammenhängenden Block in der geordneten Liste aller
+$d$-Vorkommen. Jeder solche Block der Länge mindestens $k+1$ enthält das
+$(k+1)$-te Vorkommen. Somit liegt auch $m_d(s)$ strikt zwischen $i$ und $j$.
+\end{proof}
+
+\begin{lemma}[Invarianz der Mediansignatur]
+\label{lem:signatur-invariant}
+Ist $s'=\tau_{i,j}(s)$ ein zulässiger Wechsel, so gilt
+\[
+\Sigma(s')=\Sigma(s).
+\]
+\end{lemma}
+
+\begin{proof}
+Nach Lemma~\ref{lem:medianen-im-intervall} liegen beide Medianen strikt
+zwischen $i$ und $j$. Die abgebende Mannschaft verliert somit einen Spieler
+links und einen Spieler rechts von ihrem Median. Die aufnehmende Mannschaft
+gewinnt entsprechend einen Spieler auf jeder Seite ihres Medians. In beiden
+Mannschaften besitzt der bisherige Median danach weiterhin gleich viele
+Mitspieler links und rechts von sich. Beide Medianpositionen bleiben also
+unverändert.
+
+Ferner gilt
+\[
+i<L(s)\le R(s)<j.
+\]
+Innerhalb von $[L(s),R(s)]$ wird daher kein Eintrag verändert. Sowohl die
+Grenzen als auch das vollständige Teilwort des Medianintervalls bleiben
+gleich.
+\end{proof}
+
+Damit ist bereits die notwendige Richtung bewiesen:
+\begin{equation}
+p\sim q\quad\Longrightarrow\quad\Sigma(p)=\Sigma(q).
+\label{eq:notwendigkeit}
+\end{equation}
+
+\section{Konstruktion außerhalb des Medianintervalls}
+
+\begin{lemma}[Randgestützte Wechsel]
+\label{lem:randwechsel}
+Es sei $[L,R]$ das Medianintervall eines Musters $s$.
+\begin{enumerate}
+\item Gilt $i<L$ und $s_i=s_n$, so ist $(i,n)$ zulässig.
+\item Gilt $j>R$ und $s_1=s_j$, so ist $(1,j)$ zulässig.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Wegen der Symmetrie genügt es, die erste Behauptung zu zeigen. Die gemeinsame
+Mannschaft der Endpunkte besitze $2h+1$ Spieler. Da $i$ strikt vor ihrem
+Median liegt, befinden sich höchstens $h-1$ weitere Mitglieder dieser
+Mannschaft vor $i$. Diese stimmen mit Nein. Von den übrigen $2h-1$ Wählern
+dieser Mannschaft stimmen daher mindestens $h$ mit Ja. Es gibt also strikt
+mehr Ja- als Nein-Stimmen.
+
+Die andere Mannschaft besitze $2k+1$ Spieler. Da $i$ auch vor deren Median
+liegt, befinden sich höchstens $k$ ihrer Spieler vor $i$. Keiner ihrer Spieler
+ist ein Endpunkt. Somit stimmen höchstens $k$ mit Nein und mindestens $k+1$
+mit Ja. Auch diese Mannschaft stimmt dem Wechsel zu.
+\end{proof}
+
+\begin{lemma}[Randkonstruktion]
+\label{lem:randkonstruktion}
+Seien $i<L$ und $j>R$ mit $s_i=s_j$. Dann existiert eine Folge von höchstens
+drei zulässigen Wechseln, deren Gesamteffekt genau die Einträge an den
+Positionen $i$ und $j$ umschaltet. Alle anderen Einträge werden wieder auf
+ihren ursprünglichen Wert zurückgesetzt.
+\end{lemma}
+
+\begin{proof}
+Falls $i=1$ oder $j=n$ gilt, ist der direkte Wechsel nach
+Lemma~\ref{lem:randwechsel} zulässig. Es sei daher
+\[
+1<i<L\le R<j<n
+\]
+und $x=s_i=s_j$. Je nach Belegung der Randpositionen führen wir die folgende
+Folge aus; die Wechsel sind von links nach rechts zu lesen.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X
+                                  >{\raggedright\arraybackslash}X@{}}
+\toprule
+Randwerte & Folge der Wechsel \\
+\midrule
+$s_1=s_n=x$
+  & $\tau_{i,n},\ \tau_{1,j},\ \tau_{1,n}$ \\
+$s_1=s_n\ne x$
+  & $\tau_{1,n},\ \tau_{i,n},\ \tau_{1,j}$ \\
+$s_1\ne s_n$ und $s_n=x$
+  & $\tau_{i,n},\ \tau_{1,n},\ \tau_{1,j}$ \\
+$s_1\ne s_n$ und $s_1=x$
+  & $\tau_{1,j},\ \tau_{1,n},\ \tau_{i,n}$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Bei jedem einzelnen Schritt sind die beiden angegebenen Endpunkte gleich.
+Nach Lemma~\ref{lem:randwechsel} ist der Schritt somit zulässig. Nach
+Lemma~\ref{lem:signatur-invariant} bleibt das Medianintervall auch in allen
+Zwischenzuständen dasselbe. Eine direkte Kontrolle der vier Fälle zeigt, dass
+die Randpositionen $1$ und $n$ am Ende wieder ihren Anfangswert besitzen,
+während genau $i$ und $j$ umgeschaltet wurden.
+\end{proof}
+
+\begin{lemma}[Binäres Bilanzlemma]
+\label{lem:bilanz}
+Es seien $I$ und $J$ zwei nichtleere, disjunkte Mengen binärer Positionen.
+Als abstrakte Operation dürfe man einen Eintrag aus $I$ und einen Eintrag aus
+$J$ genau dann gleichzeitig umschalten, wenn ihre aktuellen Werte gleich
+sind. Zwei Belegungen $u$ und $v$ sind genau dann durch solche Operationen
+verbunden, wenn
+\[
+\teamcount{A}{u|_I}-\teamcount{A}{u|_J}
+=
+\teamcount{A}{v|_I}-\teamcount{A}{v|_J}
+\]
+gilt.
+\end{lemma}
+
+\begin{proof}
+Jede Operation erhöht beide Anzahlen von A um eins oder verringert beide um
+eins. Die Differenz ist daher invariant.
+
+Für die umgekehrte Richtung vergleichen wir eine aktuelle Belegung mit $v$.
+Gibt es auf verschiedenen Seiten zwei Fehlstellen mit gleichem aktuellem
+Wert, so schalten wir diese gemeinsam um und beseitigen damit beide
+Fehlstellen.
+
+Gibt es auf einer Seite zwei Fehlstellen mit verschiedenen aktuellen Werten,
+so wählen wir eine beliebige Position der anderen Seite als Zwischenspeicher.
+Zuerst schalten wir diejenige Fehlstelle um, deren Wert dem Speicherwert
+entspricht. Danach stimmt der umgeschaltete Speicherwert mit der zweiten
+Fehlstelle überein, sodass wir beide gemeinsam umschalten können. Beide
+Fehlstellen sind nun korrigiert, und der Speicher besitzt wieder seinen
+ursprünglichen Wert.
+
+Angenommen, keine dieser beiden Reduktionen wäre trotz vorhandener
+Fehlstellen möglich. Dann hätten alle Fehlstellen jeder Seite jeweils
+denselben aktuellen Wert, und die Werte der beiden Seiten wären verschieden.
+Die Beiträge der beiden Seiten zur behaupteten Bilanzgleichung hätten dann
+entgegengesetzte, von null verschiedene Vorzeichen. Dies widerspricht der
+Bilanzgleichung. Folglich lässt sich eine der beiden Reduktionen so lange
+anwenden, bis keine Fehlstelle mehr vorhanden ist.
+\end{proof}
+
+\section{Hauptsatz und Algorithmus}
+
+\begin{satz}[Vollständige Charakterisierung]
+\label{satz:charakterisierung}
+Es seien $p,q\in\{A,B\}^n$, und beide Mannschaften mögen sowohl in $p$ als
+auch in $q$ ungerade Größe besitzen. Dann gilt
+\[
+p\sim q
+\quad\Longleftrightarrow\quad
+\Sigma(p)=\Sigma(q).
+\]
+\end{satz}
+
+\begin{proof}
+Die notwendige Richtung folgt aus
+Lemma~\ref{lem:signatur-invariant} beziehungsweise aus
+Gleichung~\eqref{eq:notwendigkeit}.
+
+Für die hinreichende Richtung gelte $\Sigma(p)=\Sigma(q)$. Das gemeinsame
+Medianintervall sei $[L,R]$ und das gemeinsame Teilwort sei $C$. Wir setzen
+\[
+I=\{1,\ldots,L-1\},
+\qquad
+J=\{R+1,\ldots,n\}.
+\]
+
+Zunächst zeigen wir die Bilanzgleichung aus Lemma~\ref{lem:bilanz}. Liegt der
+A-Median bei $L$, so befinden sich in jedem Muster $s$ mit dieser Signatur
+gleich viele A-Spieler links und rechts von Position $L$. Daher gilt
+\[
+\teamcount{A}{s|_I}
+=
+\bigl(\teamcount{A}{C}-1\bigr)+\teamcount{A}{s|_J}
+\]
+und somit
+\[
+\teamcount{A}{s|_I}-\teamcount{A}{s|_J}
+=\teamcount{A}{C}-1.
+\]
+Liegt der A-Median dagegen bei $R$, erhält man analog
+\[
+\teamcount{A}{s|_I}-\teamcount{A}{s|_J}
+=1-\teamcount{A}{C}.
+\]
+In beiden Fällen hängt die Differenz ausschließlich vom gemeinsamen Teilwort
+$C$ ab. Sie besitzt folglich für $p$ und $q$ denselben Wert.
+
+Sind $I$ und $J$ nichtleer, so liefert Lemma~\ref{lem:bilanz} eine Folge
+abstrakter Umschaltungen gleicher Werte, welche die Einträge außerhalb von
+$C$ von $p$ nach $q$ überführt. Jede abstrakte Umschaltung lässt sich nach
+Lemma~\ref{lem:randkonstruktion} durch höchstens drei zulässige Wechsel
+realisieren, ohne das Medianintervall zu verändern. Somit gilt $p\sim q$.
+
+Es bleibe der Randfall $I=\varnothing$. Die Mannschaft, deren Median an
+Position $1$ liegt, besitzt kein Mitglied vor ihrem Median. Da ein Median
+gleich viele Mannschaftsmitglieder links und rechts von sich hat, besteht
+diese Mannschaft aus genau einem Spieler. Sie kann daher in $J$ nicht mehr
+vorkommen; sämtliche Einträge in $J$ sind eindeutig als die andere
+Mannschaft bestimmt. Aus der gemeinsamen Signatur folgt bereits $p=q$. Der
+Fall $J=\varnothing$ ist symmetrisch.
+\end{proof}
+
+\begin{korollar}[Entscheidungskriterium für die Eingabe]
+Für ein gültiges Anfangsmuster $p$ gilt genau dann $p\sim q$, wenn beide
+Mannschaften auch in $q$ ungerade Größe besitzen und
+\[
+\Sigma(p)=\Sigma(q)
+\]
+gilt.
+\end{korollar}
+
+\begin{proof}
+Die Notwendigkeit der ungeraden Mannschaftsgrößen folgt aus der
+Paritätsinvarianz. Sind beide Größen ungerade, ist
+Satz~\ref{satz:charakterisierung} anwendbar.
+\end{proof}
+
+\subsection*{Algorithmus}
+
+Für jedes der beiden Muster wird die Mediansignatur in einem linearen
+Durchlauf bestimmt:
+\begin{enumerate}
+\item Speichere die Positionen aller A-Spieler und aller B-Spieler.
+\item Wähle aus jeder Liste das mittlere Element als Mannschaftsmedian.
+\item Setze $L$ und $R$ auf die kleinere beziehungsweise größere
+      Medianposition.
+\item Gib das Tupel $(L,R,s_Ls_{L+1}\cdots s_R)$ als Signatur zurück.
+\end{enumerate}
+
+Besitzt in $q$ eine Mannschaft gerade Größe, lautet die Antwort sofort
+\texttt{NO}. Andernfalls lautet sie genau dann \texttt{YES}, wenn die beiden
+Signaturen übereinstimmen.
+
+\begin{korollar}[Komplexität]
+Die Entscheidung benötigt $O(n)$ Zeit und in der beschriebenen
+Implementierung $O(n)$ zusätzlichen Speicher. Über alle Testfälle beträgt die
+Laufzeit $O(\sum n)$.
+\end{korollar}
+
+\begin{proof}
+Jedes Zeichen wird nur konstant oft betrachtet. Die beiden Positionslisten
+enthalten zusammen genau $n$ Einträge. Alle weiteren Operationen sind
+konstant oder proportional zur Länge des Medianintervalls, also ebenfalls
+$O(n)$.
+\end{proof}
+
+\end{document}

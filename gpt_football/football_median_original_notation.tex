@@ -1,0 +1,436 @@
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,left=20mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+
+% Tabellen
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% Matheformeln
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\newtheorem{thm}{Satz}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Korollar}
+
+\usepackage{hyperref}
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+
+% **********************************************************************
+\begin{document}
+
+\section{Das Problem}
+
+Es sei $n\in\mathbb{N}$ mit $n\geq 2$. Wir definieren die Indexmenge
+$N=\{1,2,\dots,n\}$ und zwei Vektoren
+\[
+p=(p_1,p_2,\dots,p_n),
+\qquad
+q=(q_1,q_2,\dots,q_n)
+\]
+mit $p_i,q_i\in\{0,1\}$ für $i\in N$. Für $i,j\in N$ mit $i<j$ sei
+\begin{align*}
+\mathrm{one}_i^j(p)
+&=\#\{k\mid i<k<j,\ p_k=1\},\\
+\overline{\mathrm{one}}_i^j(p)
+&=\#\{k\mid 1\leq k<i,\ p_k=1\}
+ +\#\{k\mid j<k\leq n,\ p_k=1\},\\
+\mathrm{zero}_i^j(p)
+&=\#\{k\mid i<k<j,\ p_k=0\},\\
+\overline{\mathrm{zero}}_i^j(p)
+&=\#\{k\mid 1\leq k<i,\ p_k=0\}
+ +\#\{k\mid j<k\leq n,\ p_k=0\}.
+\end{align*}
+
+\begin{defn}
+Es sei das Tupel $(n,p,q)$ wie oben beschrieben. Gibt es $i,j\in N$ mit
+$i<j$, $p_i=p_j$ und
+\begin{align}
+\mathrm{one}_i^j(p)
+&>\overline{\mathrm{one}}_i^j(p),
+\label{eq:ones-greater-original-notation}\\
+\mathrm{zero}_i^j(p)
+&>\overline{\mathrm{zero}}_i^j(p),
+\label{eq:zeros-greater-original-notation}
+\end{align}
+dann kann für $(i,j)$ folgende Transformation durchgeführt werden, die wir
+Tausch oder Wechsel nennen:
+\[
+\tau_{ij}(p)
+=(p_1,\dots,p_{i-1},1-p_i,p_{i+1},\dots,
+  p_{j-1},1-p_j,p_{j+1},\dots,p_n).
+\]
+Kann $q$ durch eine endliche Folge von $m$ Wechseln aus $p$ erreicht werden,
+also
+\[
+(\tau_{i_mj_m}\circ\cdots\circ\tau_{i_2j_2}
+ \circ\tau_{i_1j_1})(p)=q,
+\]
+so schreiben wir $p\sim q$.
+\end{defn}
+
+\begin{defn}
+Es sei $(n,p,q)$ gegeben mit
+\[
+\#\{i\in N\mid p_i=1\}
+\quad\text{und}\quad
+\#\{i\in N\mid p_i=0\}
+\]
+ungerade. Gilt $p\sim q$, so nennen wir $(n,p,q)$ lösbar.
+\label{defn:problembeschreibung-median}
+\end{defn}
+
+Die zu beantwortende Frage lautet: Ist das gegebene Tupel $(n,p,q)$ lösbar?
+
+\section{Grundlegende Eigenschaften}
+
+\begin{prop}
+Es sei $(n,p,q)$ wie in Definition
+\ref{defn:problembeschreibung-median} gegeben. Dann ist $n$ gerade.
+\end{prop}
+
+\begin{proof}
+Die Anzahl der Einsen und die Anzahl der Nullen in $p$ sind ungerade. Ihre
+Summe ist $n$ und damit gerade.
+\end{proof}
+
+\begin{prop}[Paritätsinvarianz]
+Bei jedem Wechsel ändern sich die Anzahl der Einsen und die Anzahl der Nullen
+jeweils um zwei. Insbesondere bleiben beide Anzahlen ungerade.
+\label{prop:paritaet-median}
+\end{prop}
+
+\begin{proof}
+Da $p_i=p_j$ gilt, werden entweder zwei Nullen zu Einsen oder zwei Einsen zu
+Nullen.
+\end{proof}
+
+\begin{prop}[Umkehrbarkeit]
+Kann $(i,j)$ in $p$ wechseln und ist $p'=\tau_{ij}(p)$, so kann $(i,j)$ auch
+in $p'$ wechseln. Insbesondere ist die Relation $\sim$ symmetrisch.
+\label{prop:umkehrbar-median}
+\end{prop}
+
+\begin{proof}
+Die Spieler $i$ und $j$ stimmen weder vor noch nach dem Wechsel ab. Alle
+anderen Einträge und damit alle Ja- und Nein-Stimmen bleiben unverändert.
+Die Ungleichungen
+\eqref{eq:ones-greater-original-notation} und
+\eqref{eq:zeros-greater-original-notation} gelten deshalb auch für den
+Rückwechsel.
+\end{proof}
+
+\section{Mediane und Medianintervall}
+
+\begin{defn}
+Es sei $s\in\{0,1\}^n$, und die Anzahl der Nullen sowie die Anzahl der Einsen
+in $s$ seien ungerade. Für $c\in\{0,1\}$ definieren wir
+\[
+P_c(s)=\{i\in N\mid s_i=c\}.
+\]
+Ist $\#P_c(s)=2h_c+1$, so bezeichnen wir die Position des $(h_c+1)$-ten
+Vorkommens von $c$ mit $m_c(s)$ und nennen sie den Median der $c$-Spieler.
+Weiter definieren wir
+\begin{align*}
+\ell(s)&=\min\{m_0(s),m_1(s)\},\\
+r(s)&=\max\{m_0(s),m_1(s)\}
+\end{align*}
+und die Mediansignatur
+\[
+M(s)=\bigl(\ell(s),r(s),s_{\ell(s)}s_{\ell(s)+1}\cdots s_{r(s)}\bigr).
+\]
+Das Teilwort $s_{\ell(s)}\cdots s_{r(s)}$ nennen wir Medianintervall.
+\end{defn}
+
+\begin{lem}
+Es sei $s\in\{0,1\}^n$ mit einer ungeraden Anzahl Nullen und Einsen. Können
+$i<j$ wechseln, so gilt
+\[
+i<m_0(s)<j
+\qquad\text{und}\qquad
+i<m_1(s)<j.
+\]
+\label{lem:beide-mediane-dazwischen}
+\end{lem}
+
+\begin{proof}
+Wir betrachten zunächst den Wert $c=s_i=s_j$. Es gebe $2h+1$ Einträge mit
+Wert $c$, und $i$ beziehungsweise $j$ sei das $a$-te beziehungsweise $b$-te
+Vorkommen von $c$. Die Anzahl der Ja-Stimmen der $c$-Spieler ist dann
+$b-a-1$, die Anzahl ihrer Nein-Stimmen ist
+\[
+(a-1)+(2h+1-b).
+\]
+Die strikte Mehrheitsbedingung liefert
+\[
+b-a-1>(a-1)+(2h+1-b)
+\]
+und damit $b-a\geq h+1$. Wäre $a\geq h+1$ oder $b\leq h+1$, so wäre wegen
+$1\leq a<b\leq 2h+1$ dagegen $b-a\leq h$. Es folgt
+\[
+a<h+1<b,
+\]
+also liegt $m_c(s)$ strikt zwischen $i$ und $j$.
+
+Für den anderen Wert $1-c$ gebe es $2k+1$ Einträge. Keiner von ihnen ist ein
+Endpunkt. Die zugehörige strikte Ja-Mehrheit bedeutet, dass mindestens $k+1$
+dieser Einträge zwischen $i$ und $j$ liegen. Diese Einträge bilden einen
+zusammenhängenden Block in der geordneten Liste aller $(1-c)$-Vorkommen. Jeder
+solche Block enthält das $(k+1)$-te Vorkommen. Somit liegt auch $m_{1-c}(s)$
+strikt zwischen $i$ und $j$.
+\end{proof}
+
+\begin{lem}[Invarianz der Mediansignatur]
+Können $(i,j)$ in $s$ wechseln und ist $s'=\tau_{ij}(s)$, so gilt
+\[
+M(s')=M(s).
+\]
+\label{lem:mediansignatur-invariant}
+\end{lem}
+
+\begin{proof}
+Nach Lemma~\ref{lem:beide-mediane-dazwischen} liegen beide Mediane strikt
+zwischen $i$ und $j$. Für den Wert $s_i=s_j$ verschwindet somit je ein
+Vorkommen links und rechts von seinem Median. Für den Wert $1-s_i$ kommt je
+ein Vorkommen links und rechts von seinem Median hinzu. Beide bisherigen
+Mediane besitzen danach weiterhin gleich viele gleichartige Einträge auf
+beiden Seiten und bleiben daher unverändert.
+
+Außerdem gilt
+\[
+i<\ell(s)\leq r(s)<j.
+\]
+Kein Eintrag des Medianintervalls wird umgeschaltet. Seine Grenzen und sein
+gesamtes Teilwort bleiben gleich.
+\end{proof}
+
+\begin{cor}
+Ist $(n,p,q)$ lösbar, so gilt $M(p)=M(q)$.
+\label{cor:mediansignatur-notwendig}
+\end{cor}
+
+\section{Wechsel außerhalb des Medianintervalls}
+
+\begin{lem}[Wechsel mit den Randpositionen]
+Es sei $s\in\{0,1\}^n$ wie oben und $[\ell(s),r(s)]$ sein Medianintervall.
+Dann gilt:
+\begin{enumerate}
+\item Ist $i<\ell(s)$ und $s_i=s_n$, so können $(i,n)$ wechseln.
+\item Ist $j>r(s)$ und $s_1=s_j$, so können $(1,j)$ wechseln.
+\end{enumerate}
+\label{lem:wechsel-mit-rand}
+\end{lem}
+
+\begin{proof}
+Wir zeigen die erste Aussage; die zweite folgt symmetrisch. Es sei
+$c=s_i=s_n$, und es gebe $2h+1$ Einträge mit Wert $c$. Weil $i$ vor beiden
+Medianen liegt, gibt es vor $i$ höchstens $h-1$ weitere $c$-Einträge. Daher
+stimmen höchstens $h-1$ der verbleibenden $2h-1$ Spieler mit Wert $c$ mit
+Nein und mindestens $h$ mit Ja.
+
+Es gebe $2k+1$ Einträge mit Wert $1-c$. Da auch deren Median rechts von $i$
+liegt, befinden sich höchstens $k$ von ihnen vor $i$. Folglich stimmen
+höchstens $k$ mit Nein und mindestens $k+1$ mit Ja. Damit gelten je nach Wert
+von $c$ sowohl Ungleichung
+\eqref{eq:ones-greater-original-notation} als auch Ungleichung
+\eqref{eq:zeros-greater-original-notation}.
+\end{proof}
+
+\begin{lem}[Randkonstruktion]
+Es seien $i<\ell(s)$ und $j>r(s)$ mit $s_i=s_j$. Dann gibt es eine Folge von
+höchstens drei Wechseln, deren Gesamteffekt genau dem Umschalten von $s_i$ und
+$s_j$ entspricht. Alle anderen Einträge besitzen am Ende wieder ihren
+ursprünglichen Wert.
+\label{lem:randkonstruktion-original}
+\end{lem}
+
+\begin{proof}
+Für $i=1$ oder $j=n$ ist der direkte Wechsel nach
+Lemma~\ref{lem:wechsel-mit-rand} möglich. Es sei daher
+\[
+1<i<\ell(s)\leq r(s)<j<n
+\]
+und $x=s_i=s_j$. Abhängig von den beiden Randwerten führen wir die folgende
+Folge von links nach rechts aus:
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X
+                                  >{\raggedright\arraybackslash}X@{}}
+\toprule
+Voraussetzung & Folge der Wechsel \\
+\midrule
+$s_1=s_n=x$
+  & $\tau_{in},\ \tau_{1j},\ \tau_{1n}$ \\
+$s_1=s_n\neq x$
+  & $\tau_{1n},\ \tau_{in},\ \tau_{1j}$ \\
+$s_1\neq s_n$ und $s_n=x$
+  & $\tau_{in},\ \tau_{1n},\ \tau_{1j}$ \\
+$s_1\neq s_n$ und $s_1=x$
+  & $\tau_{1j},\ \tau_{1n},\ \tau_{in}$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Bei jedem Schritt sind die beiden betroffenen Einträge gleich. Daher ist
+jeder Schritt nach Lemma~\ref{lem:wechsel-mit-rand} erlaubt. Mit
+Lemma~\ref{lem:mediansignatur-invariant} bleibt das Medianintervall in allen
+Zwischenzuständen unverändert. In jedem der vier Fälle werden $s_1$ und $s_n$
+am Ende wiederhergestellt und genau $s_i,s_j$ umgeschaltet.
+\end{proof}
+
+\begin{lem}[Bilanzlemma]
+Es seien $I$ und $J$ zwei nichtleere, disjunkte Indexmengen. Eine abstrakte
+Operation schalte je einen Eintrag aus $I$ und $J$ um, sofern beide aktuell
+gleich sind. Zwei binäre Belegungen $u$ und $v$ lassen sich genau dann durch
+solche Operationen ineinander überführen, wenn
+\begin{align}
+\#\{i\in I\mid u_i=1\}-\#\{j\in J\mid u_j=1\}
+&=
+\#\{i\in I\mid v_i=1\}-\#\{j\in J\mid v_j=1\}.
+\label{eq:bilanz-original-notation}
+\end{align}
+\label{lem:binaere-bilanz-original}
+\end{lem}
+
+\begin{proof}
+Jede Operation erhöht beide Einsenanzahlen um eins oder verringert beide um
+eins. Die Differenz in Gleichung
+\eqref{eq:bilanz-original-notation} ist daher invariant.
+
+Für die umgekehrte Richtung vergleichen wir die aktuelle Belegung mit $v$.
+Gibt es auf verschiedenen Seiten zwei falsche Einträge mit gleichem aktuellen
+Wert, so können wir beide unmittelbar umschalten und damit korrigieren.
+
+Gibt es auf derselben Seite zwei falsche Einträge mit verschiedenen aktuellen
+Werten, wählen wir einen beliebigen Eintrag der anderen Seite als
+Zwischenspeicher. Zunächst schalten wir den falschen Eintrag um, dessen Wert
+dem Speicherwert entspricht. Anschließend stimmt der neue Speicherwert mit
+dem zweiten falschen Eintrag überein. Ein zweiter Schritt korrigiert diesen
+und stellt gleichzeitig den Speicher wieder her.
+
+Wäre keine der beiden Reduktionen möglich, obwohl noch falsche Einträge
+existieren, dann hätten alle falschen Einträge auf jeder Seite jeweils
+denselben aktuellen Wert und die Werte der beiden Seiten wären verschieden.
+Die Abweichungen der beiden Seiten in
+Gleichung~\eqref{eq:bilanz-original-notation} hätten dann entgegengesetzte,
+von null verschiedene Vorzeichen. Dies ist unmöglich. Somit kann die Anzahl
+der falschen Einträge schrittweise bis auf null reduziert werden.
+\end{proof}
+
+\section{Lösung}
+
+\begin{thm}
+Es seien $p,q\in\{0,1\}^n$, wobei sowohl in $p$ als auch in $q$ die Anzahl
+der Nullen und die Anzahl der Einsen ungerade sei. Dann gilt
+\[
+p\sim q
+\quad\Longleftrightarrow\quad
+M(p)=M(q).
+\]
+\label{thm:mediansignatur-charakterisierung}
+\end{thm}
+
+\begin{proof}
+Die Richtung ``$\Rightarrow$'' folgt aus
+Korollar~\ref{cor:mediansignatur-notwendig}.
+
+Für die Richtung ``$\Leftarrow$'' gelte $M(p)=M(q)$. Wir schreiben
+\[
+\ell=\ell(p)=\ell(q),
+\qquad
+r=r(p)=r(q)
+\]
+und bezeichnen das gemeinsame Medianintervall mit
+\[
+C=p_\ell p_{\ell+1}\cdots p_r
+ =q_\ell q_{\ell+1}\cdots q_r.
+\]
+Außerdem setzen wir
+\[
+I=\{1,\dots,\ell-1\},
+\qquad
+J=\{r+1,\dots,n\}.
+\]
+
+Zunächst zeigen wir Gleichung
+\eqref{eq:bilanz-original-notation} für die Einschränkungen von $p$ und $q$
+auf $I\cup J$. Liegt der Median der Einsen bei $\ell$, so besitzt jeder
+Vektor $s$ mit Signatur $M(p)$ gleich viele Einsen links und rechts von
+$\ell$. Daher gilt
+\begin{align*}
+\#\{i\in I\mid s_i=1\}
+&=
+\#\{k\in\{\ell,\dots,r\}\mid s_k=1\}-1
+ +\#\{j\in J\mid s_j=1\}.
+\end{align*}
+Somit ist
+\begin{align*}
+\#\{i\in I\mid s_i=1\}
+-\#\{j\in J\mid s_j=1\}
+&=
+\#\{k\in\{\ell,\dots,r\}\mid s_k=1\}-1,
+\end{align*}
+also ausschließlich durch $C$ bestimmt. Liegt der Median der Einsen bei $r$,
+so folgt analog
+\begin{align*}
+\#\{i\in I\mid s_i=1\}
+-\#\{j\in J\mid s_j=1\}
+&=
+1-\#\{k\in\{\ell,\dots,r\}\mid s_k=1\}.
+\end{align*}
+Die Bilanz ist daher in $p$ und $q$ gleich.
+
+Sind $I$ und $J$ nichtleer, so liefert
+Lemma~\ref{lem:binaere-bilanz-original} eine Folge abstrakter Umschaltungen,
+welche $p$ außerhalb von $C$ in $q$ überführt. Jede abstrakte Umschaltung
+zweier gleicher Einträge $p_i=p_j$ mit $i\in I$ und $j\in J$ kann nach
+Lemma~\ref{lem:randkonstruktion-original} durch höchstens drei erlaubte
+Wechsel realisiert werden. Das Medianintervall $C$ bleibt dabei unverändert.
+Damit gilt $p\sim q$.
+
+Ist $I=\varnothing$, so liegt einer der beiden Mediane an Position $1$. Für
+den zugehörigen Wert gibt es keinen gleichartigen Eintrag links vom Median;
+folglich gibt es auch keinen rechts davon. Dieser Wert tritt insgesamt genau
+einmal auf. Alle Einträge in $J$ sind daher zwangsläufig gleich dem anderen
+Wert, sodass aus $M(p)=M(q)$ bereits $p=q$ folgt. Der Fall
+$J=\varnothing$ ist symmetrisch.
+\end{proof}
+
+\begin{cor}
+Es sei $(n,p,q)$ wie in Definition
+\ref{defn:problembeschreibung-median} gegeben. Genau dann ist $(n,p,q)$
+lösbar, wenn die Anzahl der Nullen und die Anzahl der Einsen in $q$ ungerade
+sind und
+\[
+M(p)=M(q)
+\]
+gilt.
+\label{cor:algorithmus-kriterium-original}
+\end{cor}
+
+\begin{proof}
+Nach Proposition~\ref{prop:paritaet-median} sind ungerade Anzahlen in $q$
+notwendig. Sind sie erfüllt, folgt die Behauptung unmittelbar aus
+Satz~\ref{thm:mediansignatur-charakterisierung}.
+\end{proof}
+
+\begin{cor}
+Es lässt sich in $O(n)$ zeitlichem Aufwand bestimmen, ob das Problem lösbar
+ist.
+\end{cor}
+
+\begin{proof}
+Wir bestimmen in $p$ und $q$ jeweils die geordneten Positionen der Nullen und
+Einsen. Das mittlere Element jeder Liste liefert $m_0$ beziehungsweise $m_1$.
+Anschließend vergleichen wir $\ell$, $r$ und die beiden Teilwörter zwischen
+diesen Grenzen. Jede Position wird nur konstant oft betrachtet. Daher beträgt
+der Zeitaufwand $O(n)$. Werden die Positionen wie in der Python-Implementierung
+gespeichert, beträgt der zusätzliche Speicherbedarf $O(n)$.
+\end{proof}
+
+\end{document}

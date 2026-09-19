@@ -1,0 +1,92 @@
+\documentclass[12pt]{article}
+
+  \usepackage[a4paper,left=20mm, right=25mm,top=25mm, bottom=25mm]{geometry}
+  \usepackage[utf8]{inputenc}
+  \usepackage[ngerman]{babel}
+  \usepackage[T1]{fontenc}
+
+  %Grafiken
+  \usepackage{graphicx}
+ 
+  %Tabellen
+  \usepackage{array}
+  \usepackage{tabularx}
+  \usepackage{booktabs}
+  \newcolumntype{K}[1]{S[table-format={#1}, table-alignment=center, table-number-alignment=center, input-decimal-markers={,}, output-decimal-marker={,}]}
+  \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe  
+  \newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}} % zentriert mit Breitenangabe  
+  \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe  
+  
+  %Matheformeln
+  \usepackage{amsmath,amsfonts,amssymb,amsthm} %mathe symbole
+    \newtheorem{thm}{Satz} %[section]
+    \newtheorem{defn}[thm]{Definition}
+    \newtheorem{lem}[thm]{Lemma}
+    \newtheorem{prop}[thm]{Proposition}
+    \newtheorem{cor}[thm]{Korollar}
+
+\usepackage{hyperref}
+
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+%\usepackage{courier}
+    
+ 
+%***********************************************************************
+\begin{document}
+
+\section{Das Problem}
+Es sei $n\in\mathbb{N}$ mit $n\geq 2$. Wir definieren die Indexmenge $N=\{1, 2,\dots, n\}$ und zwei Vektoren $p = (p_1, p_2, \dots, p_n), q = (q_1, q_2, \dots, q_n)$ mit $n\geq 2$ und $p_i, q_i \in \{0, 1\}$ für $i\in N$. 
+Für $i,j \in N$ mit $i<j$ sei 
+\begin{align*}
+\mathrm{one}_i^j(p) &=   \#\{ k \mid i< k < j, p_k=1 \}
+\\
+\overline{\mathrm{one}}_i^j(p) &=  \#\{ k \mid 1\leq k<i, p_k=1 \}
++
+\#\{ k \mid j< k\leq n, p_k=1 \}
+\\
+\mathrm{zero}_i^j(p) 
+&=   \#\{ k\mid i< k < j, p_k=0 \}
+\\
+\overline{\mathrm{zero}}_i^j(p) 
+&=   \#\{ k\mid 1\leq k < i, p_k=0 \}
++  \#\{ k\mid j< k \leq n, p_k=0 \}
+\end{align*}
+
+\begin{defn}
+Es sei das Tupel $(n, p, q)$ wie oben beschrieben.
+Gibt es $i, j \in N$ mit $i<j$, $p_i = p_j$ und
+\begin{align}
+\mathrm{one}_i^{j}(p)
+&> 
+\overline{\mathrm{one}}_i^{j}(p),
+\label{eq:Voraussetzung für Tausch -> ones_greater}
+\\
+\mathrm{zero}_i^{j}(p)
+&> 
+\overline{\mathrm{zero}}_i^{j}(p),
+\label{eq:Voraussetzung für Tausch -> zeros_greater}
+\end{align}
+dann kann für $(i, j)$ folgende Transformation durchgeführt werden, die wir Tausch oder Wechsel nennen
+\begin{align*}
+\tau_{ij}(p) 
+&= (p_1, p_2, \dots, p_{i-1}, 1-p_i, p_{i+1},\dots, p_{j-1}, 1-p_j, p_{j+1},\dots, p_n).
+\end{align*}
+Kann ein $q$ durch eine endliche Folge von $m$ Wechseln aus $p$ erreicht werden, also
+\begin{align}
+(\tau_{i_mj_m} \circ \cdots \circ \tau_{i_2j_2}\circ \tau_{i_1j_1}) (p) 
+&= 
+q,
+\label{eq:p=q durch wechsel}
+\end{align}
+schreiben wir auch $p\sim q$.
+\end{defn}
+
+\begin{defn}
+Es sei $(n, p, q)$ gegeben mit $\#\{ i \in N\mid p_i=1 \}$ und $\#\{ i \in N\mid p_i=0 \}$ ungerade.
+Gilt $p\sim q$, so nennen wir $(n, p, q)$ lösbar.
+\label{defn:problembeschreibung}
+\end{defn}
+\noindent Und die Frage ist natürlich: Es sei das Tupel $(n, p, q)$ gegeben. Ist $(n, p, q)$ lösbar?
+
+\end{document}
